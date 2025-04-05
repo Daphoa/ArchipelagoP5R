@@ -1,0 +1,22 @@
+{
+  "CONSUMABLE": {
+    "Devil Fruit": 1,
+    "Recov-R: 50 mg": 2,
+    "Recov-R: 100 mg": 3,
+    "Takemedic": 4,
+    "Lifestone": 5,
+    "Bead": 6,
+    "Takemedic-All": 7,
+    "Takemedic-All V": 8,
+    "Takemedic-All Z": 9,
+    "Goho-M": 101
+  },
+  "KEY_ITEM": {
+    "Kamoshida's Medal": 105,
+    "Randy Right Eye": 116,
+    "Lustful Left Eye": 117,
+    "Red Lust Seed": 225,
+    "Green Lust Seed": 226,
+    "Blue Lust Seed": 227
+  }
+}
