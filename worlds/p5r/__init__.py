@@ -146,7 +146,7 @@ class Persona5RoyalWorld(World):
             P5RLocation(self.player, "Castle of Lust - Central Tower Chest 2", 0x200001C7, castle_of_lust_part_3),
             P5RLocation(self.player, "Castle of Lust - Central Tower Chest 3", 0x200001CD, castle_of_lust_part_3),
             P5RLocation(self.player, "Castle of Lust - Blue Lust Seed", 0x200013FD, castle_of_lust_part_3),
-            # P5RLocation(self.player, "Castle of Lust - Red Lust Seed", 0, castle_of_lust_part_3),
+            P5RLocation(self.player, "Castle of Lust - Red Lust Seed", 0x200013FB, castle_of_lust_part_3),
         ]
 
         castle_of_lust_ending.locations += [
