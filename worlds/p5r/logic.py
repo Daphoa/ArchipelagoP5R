@@ -5,8 +5,15 @@ def has_grappling_hook(state: CollectionState, world: MultiWorld, player: int) -
     return state.has("Grappling Hook", player)
 
 
+def has_guts_2(state: CollectionState, world: MultiWorld, player: int) -> bool:
+    # For now its assumed the player will be able to grind out social stats
+    return True
+
+
 def can_make_coffee(state: CollectionState, world: MultiWorld, player: int) -> bool:
-    return state.has("Coffee Basics", player)
+    # Some odd behaviour - needs to be investigated manually to implement.
+    return False
+    # return state.has("Coffee Basics", player)
 
 
 def has_kamoshidas_medal(state: CollectionState, world: MultiWorld, player: int) -> bool:
