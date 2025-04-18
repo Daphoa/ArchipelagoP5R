@@ -21,7 +21,8 @@ class GameItemType(Enum):
 
 
 GAME_ITEM_HEX_PREFIX = 0x1000000
-GAME_ITEM_TYPE_PREFIX = 0x10000
+GAME_ITEM_TYPE_PREFIX = 0x1000
+GAME_ITEM_COUNT_PREFIX = 0x10000
 
 game_items: dict[GameItemType, dict[str, int]] = {}
 
@@ -41,7 +42,7 @@ if not game_items:
         for item_name in data:
             item_code = data[item_name]
 
-            check_num = item_code + prefix_code + GAME_ITEM_HEX_PREFIX
+            check_num = item_code + prefix_code + GAME_ITEM_HEX_PREFIX + count * GAME_ITEM_COUNT_PREFIX
 
             inner[item_name] = check_num
 

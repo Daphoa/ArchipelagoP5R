@@ -35,7 +35,7 @@ class Persona5RoyalWorld(World):
     web = P5RWeb()
     topology_present = True
 
-    _num_locations = 25
+    _num_locations = 26 + 4
 
     item_name_to_id = {
         # "Recov-R: 50 mg": 0x3002 + 0x010000 + 0x1000000,
@@ -52,6 +52,10 @@ class Persona5RoyalWorld(World):
         "Chapel Lower NW Chest": 0x200001D4,
         "Chapel Upper SE Chest": 0x200001CA,
         "Chapel Upper SW Chest": 0x200001C9,
+        "Hierophant Rank 1": 0x60000061,
+        "Hierophant Rank 2": 0x60000062,
+        "Hierophant Rank 3": 0x60000063,
+        "Hierophant Rank 4": 0x60000064,
     }
 
     def __init__(self, multiworld: "MultiWorld", player: int):
@@ -79,7 +83,7 @@ class Persona5RoyalWorld(World):
         # Add filler
         new_items += generate_filler(num=self._num_locations - len(new_items), random=self.random, player=self.player)
 
-        print(new_items)
+        print([item.name for item in new_items])
 
         self.multiworld.itempool += new_items
 
@@ -87,18 +91,21 @@ class Persona5RoyalWorld(World):
         menu_region: P5RRegion = P5RRegion("Menu", self.player, self.multiworld)
         april: P5RRegion = P5RRegion("April", self.player, self.multiworld)
         castle_of_lust_beginning: P5RRegion = P5RRegion("Castle of Lust Beginning", self.player, self.multiworld)
-        castle_of_lust_beginning_grapple_check: P5RRegion = P5RRegion("Castle of Lust Early Grapple Check", self.player,
-                                                                      self.multiworld)
         castle_of_lust_part_2: P5RRegion = P5RRegion("Castle of Lust Part 2", self.player, self.multiworld)
         castle_of_lust_part_3: P5RRegion = P5RRegion("Castle of Lust Part 3", self.player, self.multiworld)
         castle_of_lust_ending: P5RRegion = P5RRegion("Castle of Lust Ending", self.player, self.multiworld)
         castle_of_lust_infiltration: P5RRegion = P5RRegion("Castle of Lust Infiltration", self.player, self.multiworld)
 
+        cmm_hierophant_start: P5RRegion = P5RRegion("Hierophant Confidant Start", self.player, self.multiworld)
+        cmm_hierophant_part_2: P5RRegion = P5RRegion("Hierophant Confidant After Coffee", self.player, self.multiworld)
+        cmm_hierophant_part_3: P5RRegion = P5RRegion("Hierophant Confidant After Pyramid of Wrath", self.player,
+                                                     self.multiworld)
+        cmm_hierophant_part_4: P5RRegion = P5RRegion("Hierophant Confidant After Kindness", self.player,
+                                                     self.multiworld)
+        cmm_hierophant_part_5: P5RRegion = P5RRegion("Hierophant Confidant After Request", self.player, self.multiworld)
+
         menu_region.connect(april, name="Menu to April")
         april.connect(castle_of_lust_beginning, name="April Dungeon Connection")
-        castle_of_lust_beginning.connect(castle_of_lust_beginning_grapple_check,
-                                         rule=lambda state: has_grappling_hook(state, self.multiworld,
-                                                                               self.player))
         castle_of_lust_beginning.connect(castle_of_lust_part_2,
                                          rule=lambda state: has_kamoshidas_medal(state, self.multiworld,
                                                                                  self.player))
@@ -123,10 +130,10 @@ class Persona5RoyalWorld(World):
             lust_beginning_grapple_check,
         ]
 
-        castle_of_lust_beginning_grapple_check.locations += [
-            P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 1", 0x20000173,
-                        castle_of_lust_beginning_grapple_check),
-        ]
+        # castle_of_lust_beginning_grapple_check.locations += [
+        #     P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 1", 0x20000173,
+        #                 castle_of_lust_beginning_grapple_check),
+        # ]
 
         castle_of_lust_part_2.locations += [
             P5RLocation(self.player, "Castle of Lust - Chapel Lower NW Chest", 0x200001D4, castle_of_lust_part_2),
@@ -161,5 +168,19 @@ class Persona5RoyalWorld(World):
         defeat_asmodeus_loc = P5RLocation(self.player, "Defeat Asmodeus", None, castle_of_lust_infiltration)
         defeat_asmodeus_loc.place_locked_item(
             P5RItem("Defeat Asmodeus", ItemClassification.progression, None, self.player))
+
+        menu_region.connect(cmm_hierophant_start, name="Menu to Hierophant")
+        cmm_hierophant_start.connect(cmm_hierophant_part_2,
+                                     rule=lambda state: can_make_coffee(state, self.multiworld, self.player))
+
+        cmm_hierophant_start.locations += [
+            P5RLocation(self.player, "Hierophant Rank 1", 0x60000061, cmm_hierophant_start),
+            P5RLocation(self.player, "Hierophant Rank 2", 0x60000062, cmm_hierophant_start),
+        ]
+
+        cmm_hierophant_part_2.locations += [
+            P5RLocation(self.player, "Hierophant Rank 3", 0x60000063, cmm_hierophant_part_2),
+            P5RLocation(self.player, "Hierophant Rank 4", 0x60000064, cmm_hierophant_part_2),
+        ]
 
         self.multiworld.regions.append(menu_region)
