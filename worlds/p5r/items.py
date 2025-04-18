@@ -40,6 +40,7 @@ if not game_items:
         inner: dict[str, int] = {}
 
         for item_name in data:
+            count = 1
             item_code = data[item_name]
 
             check_num = item_code + prefix_code + GAME_ITEM_HEX_PREFIX + count * GAME_ITEM_COUNT_PREFIX
@@ -65,5 +66,5 @@ def generate_filler(num: int, player: int, random: Random) -> list[P5RItem]:
         return []
 
     item_names: list[str] = random.choices([name for name in game_items[GameItemType.CONSUMABLE]], k=num)
-    return [P5RItem(name, code=game_items[GameItemType.CONSUMABLE][name], classification=ItemClassification.filler,
+    return [P5RItem(name=name, code=game_items[GameItemType.CONSUMABLE][name], classification=ItemClassification.filler,
                     player=player) for name in item_names]

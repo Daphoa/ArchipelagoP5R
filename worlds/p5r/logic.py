@@ -5,6 +5,10 @@ def has_grappling_hook(state: CollectionState, world: MultiWorld, player: int) -
     return state.has("Grappling Hook", player)
 
 
+def can_make_coffee(state: CollectionState, world: MultiWorld, player: int) -> bool:
+    return state.has("Coffee Basics", player)
+
+
 def has_kamoshidas_medal(state: CollectionState, world: MultiWorld, player: int) -> bool:
     return state.has("Kamoshida's Medal", player)
 
