@@ -35,7 +35,7 @@ class Persona5RoyalWorld(World):
     web = P5RWeb()
     topology_present = True
 
-    _num_locations = 26 + 4
+    _num_locations = 26 + 12
 
     item_name_to_id = {
         "Grappling Hook": 0x2A3B + 0x3000000,
@@ -113,13 +113,24 @@ class Persona5RoyalWorld(World):
     def create_items(self):
         key_items: dict[str, int] = game_items[GameItemType.KEY_ITEM]
 
-        progression_items: list[str] = ["Kamoshida's Medal", "Lustful Left Eye", "Randy Right Eye", "Red Lust Seed",
-                                        "Green Lust Seed", "Blue Lust Seed"]
+        progression_items: list[str] = ["Kamoshida's Medal",  "Red Lust Seed", "Green Lust Seed", "Blue Lust Seed",
+                                        "Randy Right Eye", "Lustful Left Eye"]
 
         new_items: list[P5RItem] = [
-            P5RItem("Coffee Basics", ItemClassification.useful, 52 + 0x2000000, self.player),
-            P5RItem("Leblanc Curry", ItemClassification.useful, 55 + 0x2000000, self.player),
             P5RItem("Grappling Hook", ItemClassification.progression, 0x2A3B + 0x3000000, self.player),
+            P5RItem("Hierophant: Coffee Basics", ItemClassification.progression, 52 + 0x2000000, self.player),
+            P5RItem("Hierophant: Leblanc Curry", ItemClassification.useful, 55 + 0x2000000, self.player),
+            P5RItem("Chariot: Punk Talk", ItemClassification.useful, 0x4B + 0x2000000, self.player),
+            P5RItem("Chariot: Follow Up", ItemClassification.useful, 0x49 + 0x2000000, self.player),
+            P5RItem("Chariot: Stealth Dash", ItemClassification.useful, 0x11B + 0x2000000, self.player),
+            P5RItem("Chariot: Harisen Recovery", ItemClassification.useful, 0x4A + 0x2000000, self.player),
+            P5RItem("Chariot: Insta-kill", ItemClassification.useful, 0x50 + 0x2000000, self.player),
+            P5RItem("Chariot: Endure", ItemClassification.useful, 0x4D + 0x2000000, self.player),
+            P5RItem("Chariot: Protect", ItemClassification.useful, 0x4F + 0x2000000, self.player),
+            P5RItem("Death: Sterilization", ItemClassification.useful, 0x85 + 0x2000000, self.player),
+            P5RItem("Death: Immunization", ItemClassification.useful, 0x89 + 0x2000000, self.player),
+            P5RItem("Death: Discount", ItemClassification.useful, 0x87 + 0x2000000, self.player),
+            P5RItem("Death: Resuscitation", ItemClassification.useful, 0x8B + 0x2000000, self.player),
         ]
 
         # Progression items
@@ -220,7 +231,8 @@ class Persona5RoyalWorld(World):
                                      rule=lambda state: can_make_coffee(state, self.multiworld, self.player))
         menu_region.connect(cmm_chariot_start, name="Menu to Chariot")
         menu_region.connect(cmm_death_start, name="Menu to Death")
-        cmm_death_start.connect(cmm_death_guts, name="Death Guts 2", rule=lambda state: has_guts_2(state, self.multiworld, self.player))
+        cmm_death_start.connect(cmm_death_guts, name="Death Guts 2",
+                                rule=lambda state: has_guts_2(state, self.multiworld, self.player))
 
         cmm_hierophant_start.locations += [
             # P5RLocation(self.player, "Hierophant Rank 1", 0x60000061, cmm_hierophant_start),
@@ -230,13 +242,6 @@ class Persona5RoyalWorld(World):
         cmm_hierophant_part_2.locations += [
             P5RLocation(self.player, "Hierophant Rank 3", 0x60000063, cmm_hierophant_part_2),
             P5RLocation(self.player, "Hierophant Rank 4", 0x60000064, cmm_hierophant_part_2),
-        ]
-
-        cmm_chariot_start.locations += [
-            # P5RLocation(self.player, "Chariot Rank 1", 0x60000081, cmm_hierophant_start),
-            P5RLocation(self.player, "Chariot Rank 2", 0x60000082, cmm_chariot_start),
-            P5RLocation(self.player, "Chariot Rank 3", 0x60000083, cmm_chariot_start),
-            P5RLocation(self.player, "Chariot Rank 4", 0x60000084, cmm_chariot_start),
         ]
 
         cmm_chariot_start.locations += [
@@ -258,6 +263,5 @@ class Persona5RoyalWorld(World):
             P5RLocation(self.player, "Death Rank 6", 0x600000E6, cmm_death_guts),
             P5RLocation(self.player, "Death Rank 7", 0x600000E7, cmm_death_guts),
         ]
-
 
         self.multiworld.regions.append(menu_region)
