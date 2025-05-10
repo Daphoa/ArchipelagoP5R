@@ -12,8 +12,7 @@ def has_guts_2(state: CollectionState, world: MultiWorld, player: int) -> bool:
 
 def can_make_coffee(state: CollectionState, world: MultiWorld, player: int) -> bool:
     # Some odd behaviour - needs to be investigated manually to implement.
-    return False
-    # return state.has("Coffee Basics", player)
+    return state.has("Hierophant: Coffee Basics", player)
 
 
 def has_kamoshidas_medal(state: CollectionState, world: MultiWorld, player: int) -> bool:
