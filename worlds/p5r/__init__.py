@@ -8,6 +8,40 @@ from .regions import P5RRegion
 from .logic import *
 
 
+def create_item_label_to_code_map() -> dict[str, int]:
+    unique_items = {
+        "Grappling Hook": 0x2A3B + 0x3000000,
+        "Hierophant: Coffee Basics": 0x34 + 0x2000000,
+        "Coffee Basics": 0x34 + 0x2000000,
+        "Hierophant: Leblanc Curry": 0x37 + 0x2000000,
+        "Leblanc Curry": 0x37 + 0x2000000,
+        "Chariot: Punk Talk": 0x4B + 0x2000000,
+        "Punk Talk": 0x4B + 0x2000000,
+        "Chariot: Follow Up": 0x49 + 0x2000000,
+        "Chariot: Stealth Dash": 0x11B + 0x2000000,
+        "Stealth Dash": 0x11B + 0x2000000,
+        "Chariot: Harisen Recovery": 0x4A + 0x2000000,
+        "Chariot: Insta-kill": 0x50 + 0x2000000,
+        "Insta-kill": 0x50 + 0x2000000,
+        "Chariot: Endure": 0x4D + 0x2000000,
+        "Chariot: Protect": 0x4F + 0x2000000,
+        # "Death: Rejuvenation": 0x83 + 0x2000000,
+        # "Rejuvenation": 0x83 + 0x2000000,
+        "Death: Sterilization": 0x85 + 0x2000000,
+        "Sterilization": 0x85 + 0x2000000,
+        "Death: Immunization": 0x89 + 0x2000000,
+        "Immunization": 0x89 + 0x2000000,
+        "Death: Discount": 0x87 + 0x2000000,
+        "Death: Resuscitation": 0x8B + 0x2000000,
+        "Resuscitation": 0x8B + 0x2000000,
+    }
+
+    unique_items |= {name: game_items[categories][name] for categories in game_items
+                             for name in game_items[categories]}
+
+    return unique_items
+
+
 class P5RWeb(WebWorld):
     """
     Webhost info for Persona 5 Royal
@@ -37,32 +71,7 @@ class Persona5RoyalWorld(World):
 
     _num_locations = 26 + 12
 
-    item_name_to_id = {
-        "Grappling Hook": 0x2A3B + 0x3000000,
-        "Hierophant: Coffee Basics": 0x34 + 0x2000000,
-        "Coffee Basics": 0x34 + 0x2000000,
-        "Hierophant: Leblanc Curry": 0x37 + 0x2000000,
-        "Leblanc Curry": 0x37 + 0x2000000,
-        "Chariot: Punk Talk": 0x4B + 0x2000000,
-        "Punk Talk": 0x4B + 0x2000000,
-        "Chariot: Follow Up": 0x49 + 0x2000000,
-        "Chariot: Stealth Dash": 0x11B + 0x2000000,
-        "Stealth Dash": 0x11B + 0x2000000,
-        "Chariot: Harisen Recovery": 0x4A + 0x2000000,
-        "Chariot: Insta-kill": 0x50 + 0x2000000,
-        "Insta-kill": 0x50 + 0x2000000,
-        "Chariot: Endure": 0x4D + 0x2000000,
-        "Chariot: Protect": 0x4F + 0x2000000,
-        # "Death: Rejuvenation": 0x83 + 0x2000000,
-        # "Rejuvenation": 0x83 + 0x2000000,
-        "Death: Sterilization": 0x85 + 0x2000000,
-        "Sterilization": 0x85 + 0x2000000,
-        "Death: Immunization": 0x89 + 0x2000000,
-        "Immunization": 0x89 + 0x2000000,
-        "Death: Discount": 0x87 + 0x2000000,
-        "Death: Resuscitation": 0x8B + 0x2000000,
-        "Resuscitation": 0x8B + 0x2000000,
-    }
+    item_name_to_id = create_item_label_to_code_map()
     location_name_to_id = {
         "Castle of Lust - West Building 1F Chest": 0x200001C2,
         "Castle of Lust - Old Castle 2F Chest 1": 0x200001D6,
@@ -105,9 +114,6 @@ class Persona5RoyalWorld(World):
     }
 
     def __init__(self, multiworld: "MultiWorld", player: int):
-        self.item_name_to_id |= {name: game_items[categories][name] for categories in game_items
-                                 for name in game_items[categories]}
-
         super(Persona5RoyalWorld, self).__init__(multiworld, player)
 
     def create_items(self):
