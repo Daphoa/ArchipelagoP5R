@@ -78,6 +78,7 @@ class Persona5RoyalWorld(World):
         "Castle of Lust - Old Castle 2F Chest 2": 0x200001D5,
         "Castle of Lust - Old Castle 2F Chest 3": 0x200001C4,
         "Castle of Lust - Old Castle 2F Chest 4": 0x200001C5,
+        "Castle of Lust - East Building 3F Chest 1":0x20000173,
         "Castle of Lust - East Building 3F Chest 2": 0x200001D3,
         "Castle of Lust - Chapel Lower NW Chest": 0x200001D4,
         "Castle of Lust - Chapel Upper SE Chest": 0x200001CA,
