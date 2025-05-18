@@ -1,10 +1,12 @@
 import csv
+from functools import reduce
+from typing import Callable
 
 from BaseClasses import Tutorial, ItemClassification
 from worlds.AutoWorld import WebWorld, World
 from .items import P5RItem, GameItemType, game_items, generate_filler
 from .locations import P5RLocation
-from .regions import P5RRegion
+from .regions import P5RRegion, palaces, LogicRequirement
 from .logic import *
 
 
@@ -36,10 +38,39 @@ def create_item_label_to_code_map() -> dict[str, int]:
         "Resuscitation": 0x8B + 0x2000000,
     }
 
-    unique_items |= {name: game_items[categories][name] for categories in game_items
-                             for name in game_items[categories]}
+    game_item_codes = {name: game_items[categories][name] for categories in game_items
+                       for name in game_items[categories]}
 
-    return unique_items
+    return unique_items | game_item_codes
+
+
+def create_location_to_code_map() -> dict[str, int]:
+    confidant_items: dict[str, int] = {
+        "Hierophant Rank 2": 0x60000062,
+        "Hierophant Rank 3": 0x60000063,
+        "Hierophant Rank 4": 0x60000064,
+        "Chariot Rank 2": 0x60000082,
+        "Chariot Rank 3": 0x60000083,
+        "Chariot Rank 4": 0x60000084,
+        "Death Rank 2": 0x600000E2,
+        "Death Rank 3": 0x600000E3,
+        "Death Rank 4": 0x600000E4,
+        "Death Rank 5": 0x600000E5,
+        "Death Rank 6": 0x600000E6,
+        "Death Rank 7": 0x600000E7,
+    }
+
+    chest_items: dict[str, int] = {chest.name: chest.id
+                                   for palace in palaces
+                                   for region in palaces[palace].regions
+                                   for chest in region.chests}
+
+    chest_items_with_palace_name: dict[str, int] = {palaces[palace].name + ": " + chest.name: chest.id
+                                                    for palace in palaces
+                                                    for region in palaces[palace].regions
+                                                    for chest in region.chests}
+
+    return confidant_items | chest_items | chest_items_with_palace_name
 
 
 class P5RWeb(WebWorld):
@@ -72,47 +103,7 @@ class Persona5RoyalWorld(World):
     _num_locations = 26 + 12
 
     item_name_to_id = create_item_label_to_code_map()
-    location_name_to_id = {
-        "Castle of Lust - West Building 1F Chest": 0x200001C2,
-        "Castle of Lust - Old Castle 2F Chest 1": 0x200001D6,
-        "Castle of Lust - Old Castle 2F Chest 2": 0x200001D5,
-        "Castle of Lust - Old Castle 2F Chest 3": 0x200001C4,
-        "Castle of Lust - Old Castle 2F Chest 4": 0x200001C5,
-        "Castle of Lust - East Building 3F Chest 1":0x20000173,
-        "Castle of Lust - East Building 3F Chest 2": 0x200001D3,
-        "Castle of Lust - Chapel Lower NW Chest": 0x200001D4,
-        "Castle of Lust - Chapel Upper SE Chest": 0x200001CA,
-        "Castle of Lust - Chapel Upper SW Chest": 0x200001C9,
-        "Castle of Lust - East Building Annex Chest 4": 0x200001CB,
-        "Castle of Lust - East Building Annex Chest 5": 0x200001D8,
-        "Castle of Lust - Roof Chest": 0x200001CC,
-        "Castle of Lust - Central Hall Chest 1": 0x200001C6,
-        "Castle of Lust - Central Hall Chest 2": 0x200001C3,
-        "Castle of Lust - Central Tower Chest 1": 0x200001D9,
-        "Castle of Lust - Central Tower Chest 2": 0x200001C7,
-        "Castle of Lust - Central Tower Chest 3": 0x200001CD,
-        "Castle of Lust - Central Tower Chest 4": 0x200001D2,
-        "Castle of Lust - Central Tower Chest 5": 0x200001CE,
-        "Castle of Lust - Central Tower Chest 6": 0x200001C8,
-        "Castle of Lust - Throne Room Chest 1": 0x200001D1,
-        "Castle of Lust - Throne Room Chest 2": 0x200001CF,
-        "Castle of Lust - Blue Lust Seed": 0x200013FD,
-        "Castle of Lust - Red Lust Seed": 0x200013FB,
-        "Castle of Lust - Green Lust Seed": 0x200013FC,
-
-        "Hierophant Rank 2": 0x60000062,
-        "Hierophant Rank 3": 0x60000063,
-        "Hierophant Rank 4": 0x60000064,
-        "Chariot Rank 2": 0x60000082,
-        "Chariot Rank 3": 0x60000083,
-        "Chariot Rank 4": 0x60000084,
-        "Death Rank 2": 0x600000E2,
-        "Death Rank 3": 0x600000E3,
-        "Death Rank 4": 0x600000E4,
-        "Death Rank 5": 0x600000E5,
-        "Death Rank 6": 0x600000E6,
-        "Death Rank 7": 0x600000E7,
-    }
+    location_name_to_id = create_location_to_code_map()
 
     def __init__(self, multiworld: "MultiWorld", player: int):
         super(Persona5RoyalWorld, self).__init__(multiworld, player)
@@ -120,7 +111,7 @@ class Persona5RoyalWorld(World):
     def create_items(self):
         key_items: dict[str, int] = game_items[GameItemType.KEY_ITEM]
 
-        progression_items: list[str] = ["Kamoshida's Medal",  "Red Lust Seed", "Green Lust Seed", "Blue Lust Seed",
+        progression_items: list[str] = ["Kamoshida's Medal", "Red Lust Seed", "Green Lust Seed", "Blue Lust Seed",
                                         "Randy Right Eye", "Lustful Left Eye"]
 
         new_items: list[P5RItem] = [
@@ -154,12 +145,6 @@ class Persona5RoyalWorld(World):
     def create_regions(self):
         menu_region: P5RRegion = P5RRegion("Menu", self.player, self.multiworld)
         april: P5RRegion = P5RRegion("April", self.player, self.multiworld)
-        castle_of_lust_beginning: P5RRegion = P5RRegion("Castle of Lust Beginning", self.player, self.multiworld)
-        castle_of_lust_part_2: P5RRegion = P5RRegion("Castle of Lust Part 2", self.player, self.multiworld)
-        castle_of_lust_part_3: P5RRegion = P5RRegion("Castle of Lust Part 3", self.player, self.multiworld)
-        castle_of_lust_ending: P5RRegion = P5RRegion("Castle of Lust Ending", self.player, self.multiworld)
-        castle_of_lust_infiltration: P5RRegion = P5RRegion("Castle of Lust Infiltration", self.player, self.multiworld)
-
         cmm_hierophant_start: P5RRegion = P5RRegion("Hierophant Confidant Start", self.player, self.multiworld)
         cmm_hierophant_part_2: P5RRegion = P5RRegion("Hierophant Confidant After Coffee", self.player, self.multiworld)
         cmm_hierophant_part_3: P5RRegion = P5RRegion("Hierophant Confidant After Pyramid of Wrath", self.player,
@@ -173,65 +158,37 @@ class Persona5RoyalWorld(World):
         cmm_chariot_start: P5RRegion = P5RRegion("Chariot Confidant Start", self.player, self.multiworld)
         cmm_chariot_may: P5RRegion = P5RRegion("Chariot Confidant May", self.player, self.multiworld)
 
+        # Info from docs
+        # TODO move this all into a method somewhere else
+        castle_of_lust_data = palaces["Castle of Lust"]
+        castle_of_lust_region = P5RRegion(castle_of_lust_data.name, self.player, self.multiworld)
+        region_map: dict[str, P5RRegion] = {region.name: P5RRegion(region.name, self.player, self.multiworld) for region
+                                            in castle_of_lust_data.regions}
+        for region_data in castle_of_lust_data.regions:
+            region = region_map[region_data.name]
+
+            if region_data.connections:
+                for connection in region_data.connections:
+                    connecting_region = region_map[connection.origin]
+                    # TODO either implement item requirements, or remove it from the parser
+                    rule_func = self.create_rule_func(connection.logic_requirements)
+                    connecting_region.connect(region, rule=rule_func)
+            else:
+                castle_of_lust_region.connect(region)
+
+            chest_locations = [P5RLocation(self.player, chest_data.name, chest_data.id, region,
+                                           rule=self.create_rule_func(chest_data.logic_requirements))
+                               for chest_data in region_data.chests]
+            region.locations += chest_locations
+
         menu_region.connect(april, name="Menu to April")
-        april.connect(castle_of_lust_beginning, name="April Dungeon Connection")
-        castle_of_lust_beginning.connect(castle_of_lust_part_2,
-                                         rule=lambda state: has_kamoshidas_medal(state, self.multiworld,
-                                                                                 self.player))
-        castle_of_lust_part_2.connect(castle_of_lust_part_3,
-                                      rule=lambda state: has_grappling_hook(state, self.multiworld, self.player))
-        castle_of_lust_part_3.connect(castle_of_lust_ending,
-                                      rule=lambda state: has_both_eyes(state, self.multiworld, self.player))
-        april.connect(castle_of_lust_infiltration,
-                      rule=lambda state: can_infiltrate_lust(state, self.multiworld, self.player))
+        april.connect(castle_of_lust_region, name="April Dungeon Connection")
 
-        lust_beginning_grapple_check = P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 1",
-                                                   0x20000173, castle_of_lust_beginning)
-        lust_beginning_grapple_check.access_rule = lambda state: has_grappling_hook(state, self.multiworld, self.player)
-
-        castle_of_lust_beginning.locations += [
-            P5RLocation(self.player, "Castle of Lust - West Building 1F Chest", 0x200001C2, castle_of_lust_beginning),
-            P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 1", 0x200001D6, castle_of_lust_beginning),
-            P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 2", 0x200001D5, castle_of_lust_beginning),
-            P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 3", 0x200001C4, castle_of_lust_beginning),
-            P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 4", 0x200001C5, castle_of_lust_beginning),
-            P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 2", 0x200001D3, castle_of_lust_beginning),
-            lust_beginning_grapple_check,
-        ]
-
-        castle_of_lust_part_2.locations += [
-            P5RLocation(self.player, "Castle of Lust - Chapel Lower NW Chest", 0x200001D4, castle_of_lust_part_2),
-            P5RLocation(self.player, "Castle of Lust - Chapel Upper SE Chest", 0x200001CA, castle_of_lust_part_2),
-            P5RLocation(self.player, "Castle of Lust - Chapel Upper SW Chest", 0x200001C9, castle_of_lust_part_2),
-            P5RLocation(self.player, "Castle of Lust - East Building Annex Chest 4", 0x200001CB,
-                        castle_of_lust_part_2),
-            P5RLocation(self.player, "Castle of Lust - East Building Annex Chest 5", 0x200001D8,
-                        castle_of_lust_part_2),
-        ]
-
-        castle_of_lust_part_3.locations += [
-            P5RLocation(self.player, "Castle of Lust - Roof Chest", 0x200001CC, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Central Hall Chest 1", 0x200001C6, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Central Hall Chest 2", 0x200001C3, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Central Tower Chest 1", 0x200001D9, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Central Tower Chest 2", 0x200001C7, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Central Tower Chest 3", 0x200001CD, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Blue Lust Seed", 0x200013FD, castle_of_lust_part_3),
-            P5RLocation(self.player, "Castle of Lust - Red Lust Seed", 0x200013FB, castle_of_lust_part_3),
-        ]
-
-        castle_of_lust_ending.locations += [
-            P5RLocation(self.player, "Castle of Lust - Central Tower Chest 4", 0x200001D2, castle_of_lust_ending),
-            P5RLocation(self.player, "Castle of Lust - Central Tower Chest 5", 0x200001CE, castle_of_lust_ending),
-            P5RLocation(self.player, "Castle of Lust - Central Tower Chest 6", 0x200001C8, castle_of_lust_ending),
-            P5RLocation(self.player, "Castle of Lust - Throne Room Chest 1", 0x200001D1, castle_of_lust_ending),
-            P5RLocation(self.player, "Castle of Lust - Throne Room Chest 2", 0x200001CF, castle_of_lust_ending),
-            P5RLocation(self.player, "Castle of Lust - Green Lust Seed", 0x200013FC, castle_of_lust_ending),
-        ]
-
-        defeat_asmodeus_loc = P5RLocation(self.player, "Defeat Asmodeus", None, castle_of_lust_infiltration)
+        defeat_asmodeus_loc = P5RLocation(self.player, "Defeat Asmodeus", None,
+                                          region_map["Castle of Lust Infiltration"])
         defeat_asmodeus_loc.place_locked_item(
             P5RItem("Defeat Asmodeus", ItemClassification.progression, None, self.player))
+        region_map["Castle of Lust Infiltration"].locations += [defeat_asmodeus_loc]
 
         menu_region.connect(cmm_hierophant_start, name="Menu to Hierophant")
         cmm_hierophant_start.connect(cmm_hierophant_part_2,
@@ -272,3 +229,12 @@ class Persona5RoyalWorld(World):
         ]
 
         self.multiworld.regions.append(menu_region)
+
+    def create_rule_func(self, logic_requirements: list[LogicRequirement]) -> Callable[[CollectionState], bool] | None:
+        rule_func = None
+        if logic_requirements:
+            logic_list: list[LogicRequirement] = [func for func in logic_requirements]
+            rule_func = lambda state: reduce(
+                (lambda val, logic_func: val and logic_func(state, self.multiworld, self.player)),
+                logic_list, True)
+        return rule_func

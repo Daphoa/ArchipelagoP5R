@@ -2,6 +2,7 @@ import json
 import pkgutil
 from enum import Enum
 from random import Random
+from typing import Optional
 
 from orjson import orjson
 
@@ -54,7 +55,7 @@ class P5RItem(Item):
     game: str = "Persona 5 Royal"
     type: str
 
-    def __init__(self, name: str, classification: ItemClassification, code: int, player: int):
+    def __init__(self, name: str, classification: ItemClassification, code: Optional[int], player: int):
         # Code placeholder
 
         super(P5RItem, self).__init__(name, classification, code, player)
