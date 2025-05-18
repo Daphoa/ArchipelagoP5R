@@ -28,8 +28,8 @@
           {
             "name": "Old Castle 3F Top of Stairs Chest",
             "id": "0x20000173",
-            "item_requirements": [
-              "Grappling Hook"
+            "logic_requirements": [
+              "has_grappling_hook"
             ]
           },
           {
@@ -43,9 +43,9 @@
         "connections": [
           {
             "origin": "Castle of Lust Without Medal",
-            "item_requirements": [
-              "Grappling Hook",
-              "Kamoshida Medal"
+            "logic_requirements": [
+              "has_kamoshidas_medal",
+              "has_grappling_hook"
             ]
           }
         ],
@@ -71,7 +71,7 @@
             "id": "0x200013FB"
           },
           {
-            "name": "Old Castle 3F Staircase before Roof",
+            "name": "Old Castle 3F Staircase Before Roof",
             "id": "0x200001D8"
           },
           {
@@ -95,15 +95,15 @@
             "id": "0x200001C3"
           },
           {
-            "name": "Tower Lower lvl Chest",
+            "name": "Tower Lower Level Chest",
             "id": "0x200001D9"
           },
           {
-            "name": "Tower Middle lvl First Chest",
+            "name": "Tower Middle Level First Chest",
             "id": "0x200001C7"
           },
           {
-            "name": "Tower Middle lvl Near Stairs Chest",
+            "name": "Tower Middle Level Near Stairs Chest",
             "id": "0x200001CD"
           }
         ]
@@ -113,23 +113,22 @@
         "connection": [
           {
             "origin": "Castle of Lust With Medal",
-            "item_requirements": [
-              "Lustful Left Eye",
-              "Randy Right Eye"
+            "logic_requirements": [
+              "has_both_eyes"
             ]
           }
         ],
         "chests": [
           {
-            "name": "Tower Upper lvl Axe Trap Chest",
+            "name": "Tower Upper Level Axe Trap Chest",
             "id": "0x200001D2"
           },
           {
-            "name": "Tower Upper lvl After Trap Room Chest",
+            "name": "Tower Upper Level After Trap Room Chest",
             "id": "0x200001CE"
           },
           {
-            "name": "Tower Upper lvl Shifting Walls Chest",
+            "name": "Tower Upper Level Shifting Walls Chest",
             "id": "0x200001C8"
           },
           {

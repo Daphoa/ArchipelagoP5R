@@ -5,18 +5,20 @@ import orjson
 from BaseClasses import Region, MultiWorld, CollectionState
 from typing import NotRequired, Callable
 
+LogicRequirement = Callable[[CollectionState, MultiWorld, int], bool]
+
 
 class Connection:
     origin: str
     item_requirements: list[str] = []
-    logic_requirements: list[Callable[[CollectionState, MultiWorld, int], bool]] = []
+    logic_requirements: list[LogicRequirement] = []
 
 
 class PalaceChest:
     name: str
     id: int
     item_requirements: list[str] = []
-    logic_requirements: list  # TODO add type here
+    logic_requirements: list[LogicRequirement] = []
 
 
 class PalaceRegion:
@@ -47,7 +49,7 @@ if not palaces:
     game_palaces_json: list[PalaceData] = orjson.loads(
         pkgutil.get_data(__name__, "data/palaces.json").decode("utf-8-sig"))
 
-    palaces = {}
+    palaces: dict[str, Palace] = {}
 
     for palace_data in game_palaces_json:
         palace: Palace = Palace()
@@ -58,6 +60,7 @@ if not palaces:
             region: PalaceRegion = PalaceRegion()
             region.name = region_data["name"]
             region.chests = []
+            region.connections = []
 
             if "chests" in region_data:
                 for chest_data in region_data["chests"]:
@@ -71,17 +74,18 @@ if not palaces:
                     region.chests.append(chest)
 
             if "connections" in region_data:
-                region.connections = []
                 for connection_data in region_data["connections"]:
                     connection: Connection = Connection()
 
                     connection.origin = connection_data["origin"]
-                    connection.item_requirements = connection_data["item_requirements"]
+                    connection.item_requirements = []
+                    if "item_requirements" in connection_data:
+                        connection.item_requirements += connection_data["item_requirements"]
                     connection.logic_requirements = []
                     if "logic_requirements" in connection_data:
                         for logic_name in connection_data["logic_requirements"]:
                             logic_func: Callable[[CollectionState, MultiWorld, int], bool] = getattr(logic, logic_name)
-                            connection.logic_requirements += logic_func
+                            connection.logic_requirements.append(logic_func)
 
                     region.connections.append(connection)
 
