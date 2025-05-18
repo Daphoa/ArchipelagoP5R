@@ -1,0 +1,158 @@
+[
+  {
+    "name": "Castle of Lust",
+    "regions": [
+      {
+        "name": "Castle of Lust Without Medal",
+        "chests": [
+          {
+            "name": "Old Castle 1F Armory Chest",
+            "id": "0x200001C2"
+          },
+          {
+            "name": "Old Castle 2F Chest 1",
+            "id": "0x200001D6"
+          },
+          {
+            "name": "Old Castle 2F Gate Puzzle Chest",
+            "id": "0x200001D5"
+          },
+          {
+            "name": "Old Castle 2F Kitchen Chest",
+            "id": "0x200001C4"
+          },
+          {
+            "name": "Old Castle 2F Guarded Chest",
+            "id": "0x200001C5"
+          },
+          {
+            "name": "Old Castle 3F Top of Stairs Chest",
+            "id": "0x20000173",
+            "item_requirements": [
+              "Grappling Hook"
+            ]
+          },
+          {
+            "name": "Old Castle 3F Near Library Chest",
+            "id": "0x200001D3"
+          }
+        ]
+      },
+      {
+        "name": "Castle of Lust After Medal",
+        "connections": [
+          {
+            "origin": "Castle of Lust Without Medal",
+            "item_requirements": [
+              "Grappling Hook",
+              "Kamoshida Medal"
+            ]
+          }
+        ],
+        "chests": [
+          {
+            "name": "Old Castle 3F Chapel Lower Chest",
+            "id": "0x200001D4"
+          },
+          {
+            "name": "Old Castle 3F Chapel Upper Chest 1",
+            "id": "0x200001CA"
+          },
+          {
+            "name": "Old Castle 3F Chapel Upper Chest 2",
+            "id": "0x200001C9"
+          },
+          {
+            "name": "Old Castle 3F Near Will Seed Chest",
+            "id": "0x200001CB"
+          },
+          {
+            "name": "Old Castle 3F Red Will Seed",
+            "id": "0x200013FB"
+          },
+          {
+            "name": "Old Castle 3F Staircase before Roof",
+            "id": "0x200001D8"
+          },
+          {
+            "name": "Roof below Will Seed Chest",
+            "id": "0x200001CC"
+          },
+          {
+            "name": "Roof Green Will Seed",
+            "id": "0x200013FC"
+          },
+          {
+            "name": "Blue Will Seed",
+            "id": "0x200013FD"
+          },
+          {
+            "name": "Old Castle 1F Central Hall Left Chest",
+            "id": "0x200001C6"
+          },
+          {
+            "name": "Old Castle 1F Central Hall Right Chest",
+            "id": "0x200001C3"
+          },
+          {
+            "name": "Tower Lower lvl Chest",
+            "id": "0x200001D9"
+          },
+          {
+            "name": "Tower Middle lvl First Chest",
+            "id": "0x200001C7"
+          },
+          {
+            "name": "Tower Middle lvl Near Stairs Chest",
+            "id": "0x200001CD"
+          }
+        ]
+      },
+      {
+        "name": "Castle of Lust After Eyes",
+        "connection": [
+          {
+            "origin": "Castle of Lust With Medal",
+            "item_requirements": [
+              "Lustful Left Eye",
+              "Randy Right Eye"
+            ]
+          }
+        ],
+        "chests": [
+          {
+            "name": "Tower Upper lvl Axe Trap Chest",
+            "id": "0x200001D2"
+          },
+          {
+            "name": "Tower Upper lvl After Trap Room Chest",
+            "id": "0x200001CE"
+          },
+          {
+            "name": "Tower Upper lvl Shifting Walls Chest",
+            "id": "0x200001C8"
+          },
+          {
+            "name": "Throne Room Hallway Chest",
+            "id": "0x200001D1"
+          },
+          {
+            "name": "Throne Room Grapple Window Chest",
+            "id": "0x200001CF"
+          }
+        ]
+      },
+      {
+        "name": "Castle of Lust Infiltration",
+        "connection": [
+          {
+            "origin": "Castle of Lust After Eyes",
+            "logic_requirements": [
+              "can_infiltrate_lust"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
