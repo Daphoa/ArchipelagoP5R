@@ -24,4 +24,8 @@ def has_both_eyes(state: CollectionState, world: MultiWorld, player: int) -> boo
 
 
 def can_infiltrate_lust(state: CollectionState, world: MultiWorld, player: int) -> bool:
-    return state.has_all([], player)
+    return state.has_all(["Red Lust Seed", "Green Lust Seed", "Blue Lust Seed"], player)
+
+
+def can_complete(state: CollectionState, world: MultiWorld, player: int) -> bool:
+    return state.can_reach_location("Defeat Asmodeus", player)

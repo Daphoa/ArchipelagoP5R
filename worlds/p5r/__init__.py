@@ -73,6 +73,18 @@ def create_location_to_code_map() -> dict[str, int]:
     return confidant_items | chest_items | chest_items_with_palace_name
 
 
+def calc_num_items() -> int:
+    april_confidant_locations = 1 + 2 + 3 + 6
+
+    # TODO eventually only figure out actually in use chests
+    all_chest_locations = len([chest
+                               for palace_name in palaces
+                               for region in palaces[palace_name].regions
+                               for chest in region.chests])
+
+    return april_confidant_locations + all_chest_locations
+
+
 class P5RWeb(WebWorld):
     """
     Webhost info for Persona 5 Royal
@@ -99,8 +111,6 @@ class Persona5RoyalWorld(World):
     game = "Persona 5 Royal"
     web = P5RWeb()
     topology_present = True
-
-    _num_locations = 26 + 12
 
     item_name_to_id = create_item_label_to_code_map()
     location_name_to_id = create_location_to_code_map()
@@ -135,14 +145,17 @@ class Persona5RoyalWorld(World):
         new_items += [P5RItem(name, ItemClassification.progression, key_items[name], self.player)
                       for name in progression_items]
 
+        num_locations = calc_num_items()
+
         # Add filler
-        new_items += generate_filler(num=self._num_locations - len(new_items), random=self.random, player=self.player)
+        new_items += generate_filler(num=num_locations - len(new_items), random=self.random, player=self.player)
 
         print([item.name for item in new_items])
 
         self.multiworld.itempool += new_items
 
     def create_regions(self):
+        p5r_regions: list[P5RRegion] = []
         menu_region: P5RRegion = P5RRegion("Menu", self.player, self.multiworld)
         april: P5RRegion = P5RRegion("April", self.player, self.multiworld)
         cmm_hierophant_start: P5RRegion = P5RRegion("Hierophant Confidant Start", self.player, self.multiworld)
@@ -158,10 +171,20 @@ class Persona5RoyalWorld(World):
         cmm_chariot_start: P5RRegion = P5RRegion("Chariot Confidant Start", self.player, self.multiworld)
         cmm_chariot_may: P5RRegion = P5RRegion("Chariot Confidant May", self.player, self.multiworld)
 
+        # Adding regions to world
+        p5r_regions.append(menu_region)
+        p5r_regions.append(april)
+        p5r_regions.append(cmm_hierophant_start)
+        p5r_regions.append(cmm_hierophant_part_2)
+        p5r_regions.append(cmm_death_start)
+        p5r_regions.append(cmm_death_guts)
+        p5r_regions.append(cmm_chariot_start)
+
         # Info from docs
         # TODO move this all into a method somewhere else
         castle_of_lust_data = palaces["Castle of Lust"]
         castle_of_lust_region = P5RRegion(castle_of_lust_data.name, self.player, self.multiworld)
+        p5r_regions.append(castle_of_lust_region)
         region_map: dict[str, P5RRegion] = {region.name: P5RRegion(region.name, self.player, self.multiworld) for region
                                             in castle_of_lust_data.regions}
         for region_data in castle_of_lust_data.regions:
@@ -180,6 +203,7 @@ class Persona5RoyalWorld(World):
                                            rule=self.create_rule_func(chest_data.logic_requirements))
                                for chest_data in region_data.chests]
             region.locations += chest_locations
+            p5r_regions.append(region)
 
         menu_region.connect(april, name="Menu to April")
         april.connect(castle_of_lust_region, name="April Dungeon Connection")
@@ -228,7 +252,11 @@ class Persona5RoyalWorld(World):
             P5RLocation(self.player, "Death Rank 7", 0x600000E7, cmm_death_guts),
         ]
 
-        self.multiworld.regions.append(menu_region)
+        self.multiworld.regions += p5r_regions
+
+        # TODO move this to a better point in logic
+        self.multiworld.completion_condition[self.player] = \
+            lambda state: logic.can_complete(state, self.multiworld, self.player)
 
     def create_rule_func(self, logic_requirements: list[LogicRequirement]) -> Callable[[CollectionState], bool] | None:
         rule_func = None

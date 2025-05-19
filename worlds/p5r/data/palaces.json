@@ -24,13 +24,23 @@
           {
             "name": "Old Castle 2F Guarded Chest",
             "id": "0x200001C5"
-          },
+          }
+        ]
+      },
+      {
+        "name": "Castle of Lust After Grapple",
+        "connections": [
           {
-            "name": "Old Castle 3F Top of Stairs Chest",
-            "id": "0x20000173",
+            "origin": "Castle of Lust Without Medal",
             "logic_requirements": [
               "has_grappling_hook"
             ]
+          }
+        ],
+        "chests": [
+          {
+            "name": "Old Castle 3F Top of Stairs Chest",
+            "id": "0x20000173"
           },
           {
             "name": "Old Castle 3F Near Library Chest",
@@ -42,10 +52,9 @@
         "name": "Castle of Lust After Medal",
         "connections": [
           {
-            "origin": "Castle of Lust Without Medal",
+            "origin": "Castle of Lust After Grapple",
             "logic_requirements": [
-              "has_kamoshidas_medal",
-              "has_grappling_hook"
+              "has_kamoshidas_medal"
             ]
           }
         ],
@@ -67,7 +76,7 @@
             "id": "0x200001CB"
           },
           {
-            "name": "Old Castle 3F Red Will Seed",
+            "name": "Old Castle 3F Red Will Seed Chest",
             "id": "0x200013FB"
           },
           {
@@ -75,15 +84,15 @@
             "id": "0x200001D8"
           },
           {
-            "name": "Roof below Will Seed Chest",
+            "name": "Roof Below Will Seed Chest",
             "id": "0x200001CC"
           },
           {
-            "name": "Roof Green Will Seed",
+            "name": "Roof Green Will Seed Chest",
             "id": "0x200013FC"
           },
           {
-            "name": "Blue Will Seed",
+            "name": "Blue Will Seed Chest",
             "id": "0x200013FD"
           },
           {
@@ -110,9 +119,9 @@
       },
       {
         "name": "Castle of Lust After Eyes",
-        "connection": [
+        "connections": [
           {
-            "origin": "Castle of Lust With Medal",
+            "origin": "Castle of Lust After Medal",
             "logic_requirements": [
               "has_both_eyes"
             ]
