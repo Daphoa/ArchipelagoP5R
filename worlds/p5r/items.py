@@ -61,25 +61,23 @@ if not game_items:
 
         game_items[gameItemType] = inner
 
-party_member_code: dict[str, int] = {
-    "Skull": 2,
-    "Mona": 3,
-    "Panther": 4,
-    "Fox": 5,
-    "Queen": 6,
-    "Noir": 7,
-    "Oracle": 8,
-    "Crow": 9,
-    "Violet": 10,
+party_member_to_code: dict[str, int] = {
+    "Skull": 2 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Mona": 3 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Panther": 4 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Fox": 5 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Queen": 6 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Noir": 7 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Oracle": 8 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Crow": 9 + PARTY_MEM_ITEM_HEX_PREFIX,
+    "Violet": 10 + PARTY_MEM_ITEM_HEX_PREFIX,
 }
 
 
-def generate_party_members(player: int) -> dict[str, P5RItem]:
+def generate_party_member_items(player: int) -> dict[str, P5RItem]:
     return {
-        mem_name: P5RItem(mem_name, ItemClassification.useful,
-                          party_member_code[mem_name] + PARTY_MEM_ITEM_HEX_PREFIX,
-                          player)
-        for mem_name in party_member_code}
+        mem_name: P5RItem(mem_name, ItemClassification.useful, party_member_to_code[mem_name], player)
+        for mem_name in party_member_to_code}
 
 
 def generate_filler(num: int, player: int, random: Random) -> list[P5RItem]:
