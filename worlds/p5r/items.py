@@ -9,6 +9,16 @@ from orjson import orjson
 from BaseClasses import Item, ItemClassification
 
 
+class P5RItem(Item):
+    game: str = "Persona 5 Royal"
+    type: str
+
+    def __init__(self, name: str, classification: ItemClassification, code: Optional[int], player: int):
+        # Code placeholder
+
+        super(P5RItem, self).__init__(name, classification, code, player)
+
+
 class GameItemType(Enum):
     MELEE_ITEM = 0
     ARMOR = 1
@@ -24,6 +34,7 @@ class GameItemType(Enum):
 GAME_ITEM_HEX_PREFIX = 0x1000000
 GAME_ITEM_TYPE_PREFIX = 0x1000
 GAME_ITEM_COUNT_PREFIX = 0x10000
+PARTY_MEM_ITEM_HEX_PREFIX = 0x5000000
 
 game_items: dict[GameItemType, dict[str, int]] = {}
 
@@ -50,15 +61,25 @@ if not game_items:
 
         game_items[gameItemType] = inner
 
+party_member_code: dict[str, int] = {
+    "Skull": 2,
+    "Mona": 3,
+    "Panther": 4,
+    "Fox": 5,
+    "Queen": 6,
+    "Noir": 7,
+    "Oracle": 8,
+    "Crow": 9,
+    "Violet": 10,
+}
 
-class P5RItem(Item):
-    game: str = "Persona 5 Royal"
-    type: str
 
-    def __init__(self, name: str, classification: ItemClassification, code: Optional[int], player: int):
-        # Code placeholder
-
-        super(P5RItem, self).__init__(name, classification, code, player)
+def generate_party_members(player: int) -> dict[str, P5RItem]:
+    return {
+        mem_name: P5RItem(mem_name, ItemClassification.useful,
+                          party_member_code[mem_name] + PARTY_MEM_ITEM_HEX_PREFIX,
+                          player)
+        for mem_name in party_member_code}
 
 
 def generate_filler(num: int, player: int, random: Random) -> list[P5RItem]:
