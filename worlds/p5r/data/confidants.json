@@ -1,0 +1,71 @@
+[
+  {
+    "name": "Death",
+    "id": 14,
+    "logic_requirements": {
+      "2": [
+        "has_guts_2"
+      ],
+      "8": [
+        "can_access_mementos",
+        "unimplemented"
+      ]
+    }
+  },
+  {
+    "name": "Chariot",
+    "id": 8,
+    "logic_requirements": {
+      "5": [
+        "unimplemented"
+      ]
+    },
+    "automatic": [
+      1
+    ]
+  },
+  {
+    "name": "Hierophant",
+    "id": 6,
+    "logic_requirements": {
+      "3": [
+        "can_make_coffee"
+      ],
+      "5": [
+        "unimplemented"
+      ]
+    }
+  },
+  {
+    "name": "Fool",
+    "id": 1,
+    "automatic": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  {
+    "name": "Magician",
+    "id": 2,
+    "automatic": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  }
+]
