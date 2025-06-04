@@ -4,7 +4,7 @@ from typing import Callable
 
 from BaseClasses import Tutorial, ItemClassification
 from worlds.AutoWorld import WebWorld, World
-from .items import P5RItem, GameItemType, game_items, generate_filler
+from .items import P5RItem, GameItemType, game_items, generate_filler, generate_party_members
 from .locations import P5RLocation
 from .regions import P5RRegion, palaces, LogicRequirement, confidants
 from .logic import *
@@ -142,9 +142,12 @@ class Persona5RoyalWorld(World):
             P5RItem("Death: Resuscitation", ItemClassification.useful, 0x8B + 0x2000000, self.player),
         ]
 
-        # Progression items
+        # Progression + useful items
         new_items += [P5RItem(name, ItemClassification.progression, key_items[name], self.player)
                       for name in progression_items]
+
+        party_mem_items: dict[str, P5RItem] = generate_party_members(self.player)
+        new_items += [party_mem_items[name] for name in party_mem_items]
 
         # Add filler
         new_items += generate_filler(num=self.num_locations - len(new_items), random=self.random, player=self.player)
