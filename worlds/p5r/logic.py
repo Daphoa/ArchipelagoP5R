@@ -10,8 +10,11 @@ def has_guts_2(state: CollectionState, world: MultiWorld, player: int) -> bool:
     return True
 
 
+def unimplemented(state: CollectionState, world: MultiWorld, player: int) -> bool:
+    return False
+
+
 def can_make_coffee(state: CollectionState, world: MultiWorld, player: int) -> bool:
-    # Some odd behaviour - needs to be investigated manually to implement.
     return state.has("Hierophant: Coffee Basics", player)
 
 
@@ -25,6 +28,10 @@ def has_both_eyes(state: CollectionState, world: MultiWorld, player: int) -> boo
 
 def can_infiltrate_lust(state: CollectionState, world: MultiWorld, player: int) -> bool:
     return state.has_all(["Red Lust Seed", "Green Lust Seed", "Blue Lust Seed"], player)
+
+
+def can_access_mementos(state: CollectionState, world: MultiWorld, player: int) -> bool:
+    return False
 
 
 def can_complete(state: CollectionState, world: MultiWorld, player: int) -> bool:

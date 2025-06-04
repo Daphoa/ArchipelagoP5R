@@ -6,8 +6,16 @@ from BaseClasses import Tutorial, ItemClassification
 from worlds.AutoWorld import WebWorld, World
 from .items import P5RItem, GameItemType, game_items, generate_filler
 from .locations import P5RLocation
-from .regions import P5RRegion, palaces, LogicRequirement
+from .regions import P5RRegion, palaces, LogicRequirement, confidants
 from .logic import *
+
+
+def create_confidant_location_name(confidant_name: str, level: int) -> str:
+    return confidant_name + " Rank " + str(level)
+
+
+def create_confidant_location_id(confidant_id: int, level: int) -> int:
+    return 0x60000000 + (confidant_id * 0x10) + level
 
 
 def create_item_label_to_code_map() -> dict[str, int]:
@@ -45,20 +53,10 @@ def create_item_label_to_code_map() -> dict[str, int]:
 
 
 def create_location_to_code_map() -> dict[str, int]:
-    confidant_items: dict[str, int] = {
-        "Hierophant Rank 2": 0x60000062,
-        "Hierophant Rank 3": 0x60000063,
-        "Hierophant Rank 4": 0x60000064,
-        "Chariot Rank 2": 0x60000082,
-        "Chariot Rank 3": 0x60000083,
-        "Chariot Rank 4": 0x60000084,
-        "Death Rank 2": 0x600000E2,
-        "Death Rank 3": 0x600000E3,
-        "Death Rank 4": 0x600000E4,
-        "Death Rank 5": 0x600000E5,
-        "Death Rank 6": 0x600000E6,
-        "Death Rank 7": 0x600000E7,
-    }
+    confidant_locations: dict[str, int] = {create_confidant_location_name(confidant_name, level):
+                                               create_confidant_location_id(confidants[confidant_name].id, level)
+                                           for confidant_name in confidants
+                                           for level in range(1, 11)}
 
     chest_items: dict[str, int] = {chest.name: chest.id
                                    for palace in palaces
@@ -70,7 +68,7 @@ def create_location_to_code_map() -> dict[str, int]:
                                                     for region in palaces[palace].regions
                                                     for chest in region.chests}
 
-    return confidant_items | chest_items | chest_items_with_palace_name
+    return confidant_locations | chest_items | chest_items_with_palace_name
 
 
 def calc_num_items() -> int:
@@ -115,6 +113,9 @@ class Persona5RoyalWorld(World):
     item_name_to_id = create_item_label_to_code_map()
     location_name_to_id = create_location_to_code_map()
 
+    p5r_regions: list[P5RRegion] = []
+    num_locations: int = 0
+
     def __init__(self, multiworld: "MultiWorld", player: int):
         super(Persona5RoyalWorld, self).__init__(multiworld, player)
 
@@ -145,53 +146,36 @@ class Persona5RoyalWorld(World):
         new_items += [P5RItem(name, ItemClassification.progression, key_items[name], self.player)
                       for name in progression_items]
 
-        num_locations = calc_num_items()
-
         # Add filler
-        new_items += generate_filler(num=num_locations - len(new_items), random=self.random, player=self.player)
+        new_items += generate_filler(num=self.num_locations - len(new_items), random=self.random, player=self.player)
 
         print([item.name for item in new_items])
 
         self.multiworld.itempool += new_items
 
     def create_regions(self):
-        p5r_regions: list[P5RRegion] = []
+
         menu_region: P5RRegion = P5RRegion("Menu", self.player, self.multiworld)
         april: P5RRegion = P5RRegion("April", self.player, self.multiworld)
-        cmm_hierophant_start: P5RRegion = P5RRegion("Hierophant Confidant Start", self.player, self.multiworld)
-        cmm_hierophant_part_2: P5RRegion = P5RRegion("Hierophant Confidant After Coffee", self.player, self.multiworld)
-        cmm_hierophant_part_3: P5RRegion = P5RRegion("Hierophant Confidant After Pyramid of Wrath", self.player,
-                                                     self.multiworld)
-        cmm_hierophant_part_4: P5RRegion = P5RRegion("Hierophant Confidant After Kindness", self.player,
-                                                     self.multiworld)
-        cmm_hierophant_part_5: P5RRegion = P5RRegion("Hierophant Confidant After Request", self.player, self.multiworld)
-
-        cmm_death_start: P5RRegion = P5RRegion("Death Confidant Start", self.player, self.multiworld)
-        cmm_death_guts: P5RRegion = P5RRegion("Death Confidant Guts 2", self.player, self.multiworld)
-        cmm_chariot_start: P5RRegion = P5RRegion("Chariot Confidant Start", self.player, self.multiworld)
-        cmm_chariot_may: P5RRegion = P5RRegion("Chariot Confidant May", self.player, self.multiworld)
 
         # Adding regions to world
-        p5r_regions.append(menu_region)
-        p5r_regions.append(april)
-        p5r_regions.append(cmm_hierophant_start)
-        p5r_regions.append(cmm_hierophant_part_2)
-        p5r_regions.append(cmm_death_start)
-        p5r_regions.append(cmm_death_guts)
-        p5r_regions.append(cmm_chariot_start)
+        self.p5r_regions.append(menu_region)
+        self.p5r_regions.append(april)
 
         # Info from docs
         # TODO move this all into a method somewhere else
         castle_of_lust_data = palaces["Castle of Lust"]
         castle_of_lust_region = P5RRegion(castle_of_lust_data.name, self.player, self.multiworld)
-        p5r_regions.append(castle_of_lust_region)
+        self.p5r_regions.append(castle_of_lust_region)
         region_map: dict[str, P5RRegion] = {region.name: P5RRegion(region.name, self.player, self.multiworld) for region
                                             in castle_of_lust_data.regions}
         for region_data in castle_of_lust_data.regions:
+            print("Got region " + region_data.name)
             region = region_map[region_data.name]
 
             if region_data.connections:
                 for connection in region_data.connections:
+                    print("Connecting to " + connection.origin)
                     connecting_region = region_map[connection.origin]
                     # TODO either implement item requirements, or remove it from the parser
                     rule_func = self.create_rule_func(connection.logic_requirements)
@@ -203,7 +187,8 @@ class Persona5RoyalWorld(World):
                                            rule=self.create_rule_func(chest_data.logic_requirements))
                                for chest_data in region_data.chests]
             region.locations += chest_locations
-            p5r_regions.append(region)
+            self.num_locations += len(chest_locations)
+            self.p5r_regions.append(region)
 
         menu_region.connect(april, name="Menu to April")
         april.connect(castle_of_lust_region, name="April Dungeon Connection")
@@ -214,45 +199,41 @@ class Persona5RoyalWorld(World):
             P5RItem("Defeat Asmodeus", ItemClassification.progression, None, self.player))
         region_map["Castle of Lust Infiltration"].locations += [defeat_asmodeus_loc]
 
-        menu_region.connect(cmm_hierophant_start, name="Menu to Hierophant")
-        cmm_hierophant_start.connect(cmm_hierophant_part_2,
-                                     rule=lambda state: can_make_coffee(state, self.multiworld, self.player))
-        menu_region.connect(cmm_chariot_start, name="Menu to Chariot")
-        menu_region.connect(cmm_death_start, name="Menu to Death")
-        cmm_death_start.connect(cmm_death_guts, name="Death Guts 2",
-                                rule=lambda state: has_guts_2(state, self.multiworld, self.player))
+        for confidant_name in confidants:
+            confidant = confidants[confidant_name]
 
-        cmm_hierophant_start.locations += [
-            # P5RLocation(self.player, "Hierophant Rank 1", 0x60000061, cmm_hierophant_start),
-            P5RLocation(self.player, "Hierophant Rank 2", 0x60000062, cmm_hierophant_start),
-        ]
+            confidant_region = P5RRegion(confidant_name + " Confidant", self.player, self.multiworld)
+            # TODO Placeholder
+            april.connect(confidant_region)
 
-        cmm_hierophant_part_2.locations += [
-            P5RLocation(self.player, "Hierophant Rank 3", 0x60000063, cmm_hierophant_part_2),
-            P5RLocation(self.player, "Hierophant Rank 4", 0x60000064, cmm_hierophant_part_2),
-        ]
+            sub_regions: list[P5RRegion] = [
+                P5RRegion(confidant_name + " Confidant Part 1", self.player, self.multiworld)
+            ]
+            confidant_region.connect(sub_regions[0])
+            for level in range(1, 11):
+                if level in confidant.automatic:
+                    # No location for automatic ranks
+                    continue
 
-        cmm_chariot_start.locations += [
-            # P5RLocation(self.player, "Chariot Rank 1", 0x60000081, cmm_hierophant_start),
-            P5RLocation(self.player, "Chariot Rank 2", 0x60000082, cmm_chariot_start),
-            P5RLocation(self.player, "Chariot Rank 3", 0x60000083, cmm_chariot_start),
-            P5RLocation(self.player, "Chariot Rank 4", 0x60000084, cmm_chariot_start),
-        ]
+                if level in confidant.logic_requirements:
+                    region_name = confidant_name + " Confidant Part " + str(len(sub_regions) + 1)
+                    new_region = P5RRegion(region_name, self.player, self.multiworld)
+                    if logic.unimplemented in confidant.logic_requirements[level]:
+                        break
+                    rule_func = self.create_rule_func(confidant.logic_requirements[level])
+                    sub_regions[-1].connect(new_region, rule=rule_func)
+                    sub_regions.append(new_region)
 
-        # cmm_death_start.locations += [
-        #     P5RLocation(self.player, "Death Rank 1", 0x600000E1, cmm_death_start),
-        # ]
+                address: int = create_confidant_location_id(confidant.id, level)
+                name: str = create_confidant_location_name(confidant.name, level)
+                location: P5RLocation = P5RLocation(self.player, name, address, sub_regions[-1])
+                sub_regions[-1].locations.append(location)
+                self.num_locations += 1
 
-        cmm_death_guts.locations += [
-            P5RLocation(self.player, "Death Rank 2", 0x600000E2, cmm_death_guts),
-            P5RLocation(self.player, "Death Rank 3", 0x600000E3, cmm_death_guts),
-            P5RLocation(self.player, "Death Rank 4", 0x600000E4, cmm_death_guts),
-            P5RLocation(self.player, "Death Rank 5", 0x600000E5, cmm_death_guts),
-            P5RLocation(self.player, "Death Rank 6", 0x600000E6, cmm_death_guts),
-            P5RLocation(self.player, "Death Rank 7", 0x600000E7, cmm_death_guts),
-        ]
+            self.p5r_regions.append(confidant_region)
+            self.p5r_regions += sub_regions
 
-        self.multiworld.regions += p5r_regions
+        self.multiworld.regions += self.p5r_regions
 
         # TODO move this to a better point in logic
         self.multiworld.completion_condition[self.player] = \

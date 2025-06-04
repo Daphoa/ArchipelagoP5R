@@ -3,9 +3,17 @@ import pkgutil
 import orjson
 
 from BaseClasses import Region, MultiWorld, CollectionState
-from typing import NotRequired, Callable
+from typing import NotRequired, Callable, TypedDict
+import worlds.p5r.logic as logic
 
 LogicRequirement = Callable[[CollectionState, MultiWorld, int], bool]
+
+
+class Confidant:
+    name: str
+    id: int
+    logic_requirements: dict[int, list[LogicRequirement]]
+    automatic: list[int]
 
 
 class Connection:
@@ -33,11 +41,9 @@ class Palace:
 
 
 palaces: dict[str, Palace] = {}
+confidants: dict[str, Confidant] = {}
 
 if not palaces:
-    from typing import TypedDict
-    import worlds.p5r.logic as logic
-
     ChestData = TypedDict('ChestData', {'name': str, 'id': str, 'item_requirements': NotRequired[list[str]]})
     ConnectionData = TypedDict('ConnectionData', {'origin': str, 'item_requirements': NotRequired[list[str]],
                                                   'logic_requirements': NotRequired[list[str]]})
@@ -49,7 +55,7 @@ if not palaces:
     game_palaces_json: list[PalaceData] = orjson.loads(
         pkgutil.get_data(__name__, "data/palaces.json").decode("utf-8-sig"))
 
-    palaces: dict[str, Palace] = {}
+    palaces = {}
 
     for palace_data in game_palaces_json:
         palace: Palace = Palace()
@@ -84,13 +90,46 @@ if not palaces:
                     connection.logic_requirements = []
                     if "logic_requirements" in connection_data:
                         for logic_name in connection_data["logic_requirements"]:
-                            logic_func: Callable[[CollectionState, MultiWorld, int], bool] = getattr(logic, logic_name)
+                            logic_func: LogicRequirement = getattr(logic, logic_name)
                             connection.logic_requirements.append(logic_func)
 
                     region.connections.append(connection)
 
             palace.regions.append(region)
         palaces[palace.name] = palace
+
+if not confidants:
+    ConfidantData = TypedDict('ConfidantData',
+                              {'name': str, 'id': str, 'logic_requirements': NotRequired[dict[str, list[str]]],
+                               'automatic': NotRequired[list[int]]})
+
+    game_confidant_json: list[ConfidantData] = orjson.loads(
+        pkgutil.get_data(__name__, "data/confidants.json").decode("utf-8-sig"))
+
+    confidants = {}
+
+    for confidant_data in game_confidant_json:
+        confidant: Confidant = Confidant()
+
+        confidant.name = confidant_data["name"]
+        confidant.id = int(confidant_data["id"])
+
+        confidant.logic_requirements = {}
+        if "logic_requirements" in confidant_data:
+            for level in confidant_data["logic_requirements"]:
+                level_logic_requirements = []
+                for logic_name in confidant_data["logic_requirements"][level]:
+                    logic_func: LogicRequirement = getattr(logic, logic_name)
+                    level_logic_requirements.append(logic_func)
+
+                confidant.logic_requirements[int(level)] = level_logic_requirements
+
+        if "automatic" in confidant_data:
+            confidant.automatic = confidant_data["automatic"]
+        else:
+            confidant.automatic = []
+
+        confidants[confidant.name] = confidant
 
 
 class P5RRegion(Region):
