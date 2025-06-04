@@ -4,7 +4,7 @@ from typing import Callable
 
 from BaseClasses import Tutorial, ItemClassification
 from worlds.AutoWorld import WebWorld, World
-from .items import P5RItem, GameItemType, game_items, generate_filler, generate_party_members
+from .items import P5RItem, GameItemType, game_items, generate_filler, generate_party_member_items, party_member_to_code
 from .locations import P5RLocation
 from .regions import P5RRegion, palaces, LogicRequirement, confidants
 from .logic import *
@@ -49,7 +49,7 @@ def create_item_label_to_code_map() -> dict[str, int]:
     game_item_codes = {name: game_items[categories][name] for categories in game_items
                        for name in game_items[categories]}
 
-    return unique_items | game_item_codes
+    return unique_items | game_item_codes | party_member_to_code
 
 
 def create_location_to_code_map() -> dict[str, int]:
@@ -146,7 +146,7 @@ class Persona5RoyalWorld(World):
         new_items += [P5RItem(name, ItemClassification.progression, key_items[name], self.player)
                       for name in progression_items]
 
-        party_mem_items: dict[str, P5RItem] = generate_party_members(self.player)
+        party_mem_items: dict[str, P5RItem] = generate_party_member_items(self.player)
         new_items += [party_mem_items[name] for name in party_mem_items]
 
         # Add filler
