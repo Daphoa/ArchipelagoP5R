@@ -37,6 +37,8 @@ GAME_ITEM_COUNT_PREFIX = 0x10000
 PARTY_MEM_ITEM_HEX_PREFIX = 0x5000000
 
 game_items: dict[GameItemType, dict[str, int]] = {}
+item_categories: dict[str, dict[str, int]] = {}
+game_item_codes: dict[str, int] = {}
 
 if not game_items:
     # Initialize item once
@@ -52,14 +54,30 @@ if not game_items:
         inner: dict[str, int] = {}
 
         for item_name in data:
-            count = 1
-            item_code = data[item_name]
+            max_count: int = 1
+            if type_str in ["CONSUMABLE", "MATERIALS"]:
+                max_count = 5
 
-            check_num = item_code + prefix_code + GAME_ITEM_HEX_PREFIX + count * GAME_ITEM_COUNT_PREFIX
+            for count in range(1, max_count + 1):
+                item_code = data[item_name]
+                sub_item_name: str
+                if count > 1:
+                    sub_item_name = str(count) + "x " + item_name
+                else:
+                    sub_item_name = item_name
 
-            inner[item_name] = check_num
+                check_num = item_code + prefix_code + GAME_ITEM_HEX_PREFIX + count * GAME_ITEM_COUNT_PREFIX
+
+                inner[sub_item_name] = check_num
 
         game_items[gameItemType] = inner
+
+    game_item_codes = {name: game_items[categories][name] for categories in game_items
+                       for name in game_items[categories]}
+
+if not item_categories:
+    item_categories = orjson.loads(
+        pkgutil.get_data(__name__, "data/item_categories.json").decode("utf-8-sig"))
 
 party_member_to_code: dict[str, int] = {
     "Skull": 2 + PARTY_MEM_ITEM_HEX_PREFIX,
@@ -80,11 +98,71 @@ def generate_party_member_items(player: int) -> dict[str, P5RItem]:
         for mem_name in party_member_to_code}
 
 
-def generate_filler(num: int, player: int, random: Random) -> list[P5RItem]:
-    # TODO enhance this algorithm, and add player options to modify it
-    if GameItemType.CONSUMABLE not in game_items:
-        return []
+def generate_filler_list() -> list[str]:
+    starting_filler_categories: list[str] = [
+        "Consumables-HP",
+        "Consumables-SP",
+        "Consumables-HP-SP",
+        "Consumables-Revival",
+        "Consumables-Food",
+        "Consumables-Battle-Recovery",
+        "Consumables-Battle-Effect",
+        # "Consumables-Tools",
+        "Skill-Card-Physical",
+        "Skill-Card-Magic",
+        "Skill-Card-Recovery/Support",
+        "Skill-Card-Passive",
+        # "Transmute-Materials",
+        "Material",
+        "Treasure",
+        # "Essentials-Incense",
+        # "Essentials-Books",
+        # "Essentials-DVDs",
+        # "Essentials-Video-Games",
+        # "Essentials-Decorations",
+        # "Essentials-Gifts",
+        # "Essentials-Other",
+        # "Key-Items",
+        # "Melee-Default",
+        "Melee-Joker",
+        "Melee-Skull",
+        "Melee-Mona",
+        "Melee-Panther",
+        "Melee-Fox",
+        "Melee-Queen",
+        "Melee-Noir",
+        "Melee-Crow",
+        "Melee-Violet",
+        # "Ranged-Default",
+        "Ranged-Joker",
+        "Ranged-Skull",
+        "Ranged-Mona",
+        "Ranged-Panther",
+        "Ranged-Fox",
+        "Ranged-Queen",
+        "Ranged-Noir",
+        "Ranged-Crow",
+        "Ranged-Violet",
+        "Armor-Laundry",
+        # "Armor-Default",
+        "Armor",
+        # "Accessory-Default",
+        "Accessory",
+        # "Outfit-Default",
+        # "Outfit",
+    ]
+    multiple_filler_categories = ["Consumables-HP", "Consumables-SP", "Consumables-Food", "Material"]
 
-    item_names: list[str] = random.choices([name for name in game_items[GameItemType.CONSUMABLE]], k=num)
-    return [P5RItem(name=name, code=game_items[GameItemType.CONSUMABLE][name], classification=ItemClassification.filler,
-                    player=player) for name in item_names]
+    filler_item_names: list[str] = []
+    filler_item_names += [name
+                          for category in starting_filler_categories
+                          for name in item_categories[category]]
+    filler_item_names += [str(n) + "x " + name
+                          for n in range(2, 6)
+                          for category in multiple_filler_categories
+                          for name in item_categories[category]]
+
+    return filler_item_names
+
+
+
