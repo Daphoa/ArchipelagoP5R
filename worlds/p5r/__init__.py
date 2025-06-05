@@ -4,7 +4,8 @@ from typing import Callable
 
 from BaseClasses import Tutorial, ItemClassification
 from worlds.AutoWorld import WebWorld, World
-from .items import P5RItem, GameItemType, game_items, generate_filler, generate_party_member_items, party_member_to_code
+from .items import P5RItem, GameItemType, game_items, generate_party_member_items, \
+    party_member_to_code, game_item_codes, generate_filler_list
 from .locations import P5RLocation
 from .regions import P5RRegion, palaces, LogicRequirement, confidants
 from .logic import *
@@ -45,9 +46,6 @@ def create_item_label_to_code_map() -> dict[str, int]:
         "Death: Resuscitation": 0x8B + 0x2000000,
         "Resuscitation": 0x8B + 0x2000000,
     }
-
-    game_item_codes = {name: game_items[categories][name] for categories in game_items
-                       for name in game_items[categories]}
 
     return unique_items | game_item_codes | party_member_to_code
 
@@ -115,11 +113,14 @@ class Persona5RoyalWorld(World):
 
     p5r_regions: list[P5RRegion] = []
     num_locations: int = 0
+    all_filler_items: list[str]
 
     def __init__(self, multiworld: "MultiWorld", player: int):
         super(Persona5RoyalWorld, self).__init__(multiworld, player)
 
     def create_items(self):
+        self.all_filler_items = generate_filler_list()
+
         key_items: dict[str, int] = game_items[GameItemType.KEY_ITEM]
 
         progression_items: list[str] = ["Kamoshida's Medal", "Red Lust Seed", "Green Lust Seed", "Blue Lust Seed",
@@ -150,7 +151,7 @@ class Persona5RoyalWorld(World):
         new_items += [party_mem_items[name] for name in party_mem_items]
 
         # Add filler
-        new_items += generate_filler(num=self.num_locations - len(new_items), random=self.random, player=self.player)
+        new_items += self._generate_filler(num=self.num_locations - len(new_items))
 
         print([item.name for item in new_items])
 
@@ -250,3 +251,16 @@ class Persona5RoyalWorld(World):
                 (lambda val, logic_func: val and logic_func(state, self.multiworld, self.player)),
                 logic_list, True)
         return rule_func
+
+    def get_filler_item_name(self) -> str:
+        """Called when the item pool needs to be filled with additional items to match location count."""
+        return self.random.choice(tuple(self.all_filler_items))
+
+    def _generate_filler(self, num: int) -> list[P5RItem]:
+        # TODO enhance this algorithm, and add player options to modify it
+        if not game_item_codes:
+            return []
+
+        item_names: list[str] = self.random.choices(self.all_filler_items, k=num)
+        return [P5RItem(name=name, code=game_item_codes[name], classification=ItemClassification.filler,
+                        player=self.player) for name in item_names]
