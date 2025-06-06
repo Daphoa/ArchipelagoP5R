@@ -6,7 +6,6 @@ from Options import Toggle, Range, Choice, PerGameCommonOptions, NamedRange, Vis
 class OracleRandomized(Choice):
     """How to randomize Oracle in your party."""
     display_name = "Randomize Oracle"
-    visibility = 0b1111
     option_start_with = 0
     option_randomize = 1
     option_no_oracle = 2
@@ -16,7 +15,6 @@ class OracleRandomized(Choice):
 class StartingParty(NamedRange):
     """How many party members do you start with (note: Oracle isn't included here)"""
     display_name = "Starting Party Member Count"
-    visibility = 0b1111
     range_start = 0
     range_end = 7
     special_range_names = {

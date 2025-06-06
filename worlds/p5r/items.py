@@ -91,11 +91,7 @@ party_member_to_code: dict[str, int] = {
     "Violet": 10 + PARTY_MEM_ITEM_HEX_PREFIX,
 }
 
-
-def generate_party_member_items(player: int) -> dict[str, P5RItem]:
-    return {
-        mem_name: P5RItem(mem_name, ItemClassification.useful, party_member_to_code[mem_name], player)
-        for mem_name in party_member_to_code}
+main_party_member_names = ["Skull", "Mona", "Panther", "Fox", "Queen", "Noir", "Crow", "Violet"]
 
 
 def generate_filler_list() -> list[str]:
@@ -163,6 +159,3 @@ def generate_filler_list() -> list[str]:
                           for name in item_categories[category]]
 
     return filler_item_names
-
-
-

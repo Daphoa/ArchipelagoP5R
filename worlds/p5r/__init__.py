@@ -4,11 +4,11 @@ from typing import Callable
 
 from BaseClasses import Tutorial, ItemClassification
 from worlds.AutoWorld import WebWorld, World
-from .items import P5RItem, GameItemType, game_items, generate_party_member_items, \
-    party_member_to_code, game_item_codes, generate_filler_list
+from .items import P5RItem, GameItemType, game_items, \
+    party_member_to_code, game_item_codes, generate_filler_list, main_party_member_names
 from .locations import P5RLocation
-from .options import P5RGameOptions
-from .regions import P5RRegion, palaces, LogicRequirement, confidants
+from .options import P5RGameOptions, OracleRandomized
+from .regions import P5RRegion, LogicRequirement, palaces, confidants
 from .logic import *
 
 
@@ -119,8 +119,20 @@ class Persona5RoyalWorld(World):
     num_locations: int = 0
     all_filler_items: list[str]
 
+    starting_members: list[str] = []
+
     def __init__(self, multiworld: "MultiWorld", player: int):
         super(Persona5RoyalWorld, self).__init__(multiworld, player)
+
+    def generate_early(self):
+        starting_members = self.random.choices(main_party_member_names, k=options.StartingParty.value)
+        for name in starting_members:
+            self.push_precollected(
+                P5RItem(name, ItemClassification.useful, party_member_to_code[name], self.player))
+
+        if self.options.oracle_randomized.value == OracleRandomized.option_start_with:
+            self.push_precollected(
+                P5RItem("Oracle", ItemClassification.useful, party_member_to_code["Oracle"], self.player))
 
     def create_items(self):
         self.all_filler_items = generate_filler_list()
@@ -151,13 +163,11 @@ class Persona5RoyalWorld(World):
         new_items += [P5RItem(name, ItemClassification.progression, key_items[name], self.player)
                       for name in progression_items]
 
-        party_mem_items: dict[str, P5RItem] = generate_party_member_items(self.player)
+        party_mem_items: dict[str, P5RItem] = self._generate_party_member_items()
         new_items += [party_mem_items[name] for name in party_mem_items]
 
         # Add filler
         new_items += self._generate_filler(num=self.num_locations - len(new_items))
-
-        print([item.name for item in new_items])
 
         self.multiworld.itempool += new_items
 
@@ -255,6 +265,14 @@ class Persona5RoyalWorld(World):
                 logic_list, True)
         return rule_func
 
+    def create_item(self, name: str) -> P5RItem:
+        code = None
+        if name in game_item_codes:
+            code = game_item_codes[name]
+
+        # TODO update item classification
+        return P5RItem(name, ItemClassification.filler, code, self.player)
+
     def get_filler_item_name(self) -> str:
         """Called when the item pool needs to be filled with additional items to match location count."""
         return self.random.choice(tuple(self.all_filler_items))
@@ -267,3 +285,15 @@ class Persona5RoyalWorld(World):
         item_names: list[str] = self.random.choices(self.all_filler_items, k=num)
         return [P5RItem(name=name, code=game_item_codes[name], classification=ItemClassification.filler,
                         player=self.player) for name in item_names]
+
+    def _generate_party_member_items(self) -> dict[str, P5RItem]:
+        party_items = {
+            mem_name: P5RItem(mem_name, ItemClassification.useful, party_member_to_code[mem_name], self.player)
+            for mem_name in party_member_to_code
+            if mem_name not in self.starting_members and mem_name != "Oracle"}
+
+        if self.options.oracle_randomized == OracleRandomized.option_randomize:
+            oracle: str = "Oracle"
+            party_items[oracle] = P5RItem(oracle, ItemClassification.useful, party_member_to_code[oracle], self.player)
+
+        return party_items
