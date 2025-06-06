@@ -7,6 +7,7 @@ from worlds.AutoWorld import WebWorld, World
 from .items import P5RItem, GameItemType, game_items, generate_party_member_items, \
     party_member_to_code, game_item_codes, generate_filler_list
 from .locations import P5RLocation
+from .options import P5RGameOptions
 from .regions import P5RRegion, palaces, LogicRequirement, confidants
 from .logic import *
 
@@ -87,6 +88,7 @@ class P5RWeb(WebWorld):
     """
 
     theme = "partyTime"
+    rich_text_options_doc = True
 
     setup_en = Tutorial(
         "Multiworld Setup Guide",
@@ -107,6 +109,8 @@ class Persona5RoyalWorld(World):
     game = "Persona 5 Royal"
     web = P5RWeb()
     topology_present = True
+    options_dataclass = P5RGameOptions
+    options: P5RGameOptions
 
     item_name_to_id = create_item_label_to_code_map()
     location_name_to_id = create_location_to_code_map()
@@ -158,7 +162,6 @@ class Persona5RoyalWorld(World):
         self.multiworld.itempool += new_items
 
     def create_regions(self):
-
         menu_region: P5RRegion = P5RRegion("Menu", self.player, self.multiworld)
         april: P5RRegion = P5RRegion("April", self.player, self.multiworld)
 
