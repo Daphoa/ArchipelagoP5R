@@ -37,7 +37,7 @@ def create_item_label_to_code_map() -> dict[str, int]:
     }
 
     unique_items |= {name: game_items[categories][name] for categories in game_items
-                             for name in game_items[categories]}
+                     for name in game_items[categories]}
 
     return unique_items
 
@@ -78,7 +78,7 @@ class Persona5RoyalWorld(World):
         "Castle of Lust - Old Castle 2F Chest 2": 0x200001D5,
         "Castle of Lust - Old Castle 2F Chest 3": 0x200001C4,
         "Castle of Lust - Old Castle 2F Chest 4": 0x200001C5,
-        "Castle of Lust - East Building 3F Chest 1":0x20000173,
+        "Castle of Lust - East Building 3F Chest 1": 0x20000173,
         "Castle of Lust - East Building 3F Chest 2": 0x200001D3,
         "Castle of Lust - Chapel Lower NW Chest": 0x200001D4,
         "Castle of Lust - Chapel Upper SE Chest": 0x200001CA,
@@ -120,7 +120,7 @@ class Persona5RoyalWorld(World):
     def create_items(self):
         key_items: dict[str, int] = game_items[GameItemType.KEY_ITEM]
 
-        progression_items: list[str] = ["Kamoshida's Medal",  "Red Lust Seed", "Green Lust Seed", "Blue Lust Seed",
+        progression_items: list[str] = ["Kamoshida's Medal", "Red Lust Seed", "Green Lust Seed", "Blue Lust Seed",
                                         "Randy Right Eye", "Lustful Left Eye"]
 
         new_items: list[P5RItem] = [
@@ -155,6 +155,7 @@ class Persona5RoyalWorld(World):
         menu_region: P5RRegion = P5RRegion("Menu", self.player, self.multiworld)
         april: P5RRegion = P5RRegion("April", self.player, self.multiworld)
         castle_of_lust_beginning: P5RRegion = P5RRegion("Castle of Lust Beginning", self.player, self.multiworld)
+        castle_of_lust_east_building_3f: P5RRegion = P5RRegion("Castle of Lust Beginning", self.player, self.multiworld)
         castle_of_lust_part_2: P5RRegion = P5RRegion("Castle of Lust Part 2", self.player, self.multiworld)
         castle_of_lust_part_3: P5RRegion = P5RRegion("Castle of Lust Part 3", self.player, self.multiworld)
         castle_of_lust_ending: P5RRegion = P5RRegion("Castle of Lust Ending", self.player, self.multiworld)
@@ -175,19 +176,17 @@ class Persona5RoyalWorld(World):
 
         menu_region.connect(april, name="Menu to April")
         april.connect(castle_of_lust_beginning, name="April Dungeon Connection")
-        castle_of_lust_beginning.connect(castle_of_lust_part_2,
-                                         rule=lambda state: has_kamoshidas_medal(state, self.multiworld,
-                                                                                 self.player))
-        castle_of_lust_part_2.connect(castle_of_lust_part_3,
-                                      rule=lambda state: has_grappling_hook(state, self.multiworld, self.player))
+        castle_of_lust_beginning.connect(castle_of_lust_east_building_3f,
+                                         rule=lambda state: has_grappling_hook(state, self.multiworld,
+                                                                               self.player))
+        castle_of_lust_east_building_3f.connect(castle_of_lust_part_2,
+                                                rule=lambda state: has_kamoshidas_medal(state, self.multiworld,
+                                                                                        self.player))
+        castle_of_lust_part_2.connect(castle_of_lust_part_3)
         castle_of_lust_part_3.connect(castle_of_lust_ending,
                                       rule=lambda state: has_both_eyes(state, self.multiworld, self.player))
         april.connect(castle_of_lust_infiltration,
                       rule=lambda state: can_infiltrate_lust(state, self.multiworld, self.player))
-
-        lust_beginning_grapple_check = P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 1",
-                                                   0x20000173, castle_of_lust_beginning)
-        lust_beginning_grapple_check.access_rule = lambda state: has_grappling_hook(state, self.multiworld, self.player)
 
         castle_of_lust_beginning.locations += [
             P5RLocation(self.player, "Castle of Lust - West Building 1F Chest", 0x200001C2, castle_of_lust_beginning),
@@ -195,8 +194,11 @@ class Persona5RoyalWorld(World):
             P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 2", 0x200001D5, castle_of_lust_beginning),
             P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 3", 0x200001C4, castle_of_lust_beginning),
             P5RLocation(self.player, "Castle of Lust - Old Castle 2F Chest 4", 0x200001C5, castle_of_lust_beginning),
-            P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 2", 0x200001D3, castle_of_lust_beginning),
-            lust_beginning_grapple_check,
+        ]
+
+        castle_of_lust_east_building_3f.locations += [
+            P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 1", 0x20000173, castle_of_lust_east_building_3f),
+            P5RLocation(self.player, "Castle of Lust - East Building 3F Chest 2", 0x200001D3, castle_of_lust_east_building_3f),
         ]
 
         castle_of_lust_part_2.locations += [
