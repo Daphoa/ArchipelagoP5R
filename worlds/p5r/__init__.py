@@ -125,12 +125,16 @@ class Persona5RoyalWorld(World):
         super(Persona5RoyalWorld, self).__init__(multiworld, player)
 
     def generate_early(self):
-        starting_members = self.random.choices(main_party_member_names, k=options.StartingParty.value)
+        # if self.options.starting_party.value:
+        #     starting_nums = self.options.starting_party
+        # else:
+        #     starting_nums = options.StartingParty.default
+        starting_members = self.random.choices(main_party_member_names, k=int(self.options.starting_party))
         for name in starting_members:
             self.push_precollected(
                 P5RItem(name, ItemClassification.useful, party_member_to_code[name], self.player))
 
-        if self.options.oracle_randomized.value == OracleRandomized.option_start_with:
+        if self.options.oracle_randomized == OracleRandomized.option_start_with:
             self.push_precollected(
                 P5RItem("Oracle", ItemClassification.useful, party_member_to_code["Oracle"], self.player))
 
@@ -292,7 +296,7 @@ class Persona5RoyalWorld(World):
             for mem_name in party_member_to_code
             if mem_name not in self.starting_members and mem_name != "Oracle"}
 
-        if self.options.oracle_randomized == OracleRandomized.option_randomize:
+        if self.options.oracle_randomized.value == OracleRandomized.option_randomize:
             oracle: str = "Oracle"
             party_items[oracle] = P5RItem(oracle, ItemClassification.useful, party_member_to_code[oracle], self.player)
 
