@@ -1,0 +1,616 @@
+{
+  "Fool": [
+    {
+      "Name": "Wild Talk",
+      "Id": "0x01"
+    },
+    {
+      "Name": "Third Eye",
+      "Id": "0x02"
+    },
+    {
+      "Name": "Arcana Burst",
+      "Id": "0x03",
+      "Progressive-Index": 1,
+      "Progressive-Group": "Arcana Burst"
+    },
+    {
+      "Name": "High Arcana Burst",
+      "Id": "0x06",
+      "Progressive-Index": 2,
+      "Progressive-Group": "Arcana Burst"
+    },
+    {
+      "Name": "Max Arcana Burst",
+      "Id": "0x0A",
+      "Progressive-Index": 3,
+      "Progressive-Group": "Arcana Burst"
+    },
+    {
+      "Name": "Power Stock",
+      "Aliases": [
+        "Persona Stock (8)"
+      ],
+      "Id": "0x04",
+      "Progressive-Index": 1,
+      "Progressive-Group": "Persona Stock"
+    },
+    {
+      "Name": "Super Stock",
+      "Aliases": [
+        "Persona Stock (10)"
+      ],
+      "Id": "0x05",
+      "Progressive-Index": 2,
+      "Progressive-Group": "Persona Stock"
+    },
+    {
+      "Name": "Ultra Stock",
+      "Aliases": [
+        "Persona Stock (12)"
+      ],
+      "Id": "0x08",
+      "Progressive-Index": 3,
+      "Progressive-Group": "Persona Stock"
+    }
+  ],
+  "Magician": [
+    {
+      "Name": "Infiltration Tools",
+      "Id": "0x0B",
+      "Progressive-Index": 1,
+      "Progressive-Group": "Infiltration Tools"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0x0C"
+    },
+    {
+      "Name": "Kitty Talk",
+      "Id": "0x0F"
+    },
+    {
+      "Name": "Pickpocket",
+      "Id": "0x4E"
+    },
+    {
+      "Name": "Ace Tools",
+      "Id": "0x0E",
+      "Progressive-Index": 2,
+      "Progressive-Group": "Infiltration Tools"
+    },
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0x12"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x11"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x13"
+    }
+  ],
+  "Priestess": [
+    {
+      "Name": "Shadow Calculus",
+      "Id": "0x15"
+    },
+    {
+      "Name": "Black Belt Talk",
+      "Id": "0x17"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0x16"
+    },
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0x1A"
+    },
+    {
+      "Name": "Shadow Factorization",
+      "Id": "0x1E"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x1B"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x1D"
+    }
+  ],
+  "Empress": [
+    {
+      "Name": "Cultivation",
+      "Id": "0xDD"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0x20"
+    },
+    {
+      "Name": "Celeb Talk",
+      "Id": "0x21"
+    },
+    {
+      "Name": "Bumper Crop",
+      "Id": "0x22"
+    },
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0x1F"
+    },
+    {
+      "Name": "Soil Improvement",
+      "Id": "0x25"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x26"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x27"
+    }
+  ],
+  "Emperor": [
+    {
+      "Name": "Card Duplication",
+      "Id": "0x29"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0x2A"
+    },
+    {
+      "Name": "Art Talk",
+      "Id": "0x2B"
+    },
+    {
+      "Name": "Card Creation",
+      "Id": "0x112"
+    },
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0x2E"
+    },
+    {
+      "Name": "Live Painting",
+      "Id": "0x113"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x2F"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x31"
+    }
+  ],
+  "Hierophant": [
+    {
+      "Name": "Coffee Basics",
+      "Id": "0x34",
+      "Progressive-Group": "Coffee",
+      "Progressive-Index": 1
+    },
+    {
+      "Name": "Coffee Mastery",
+      "Id": "0x36",
+      "Progressive-Group": "Coffee",
+      "Progressive-Index": 2
+    },
+    {
+      "Name": "LeBlanc Curry ",
+      "Id": "0x37",
+      "Progressive-Group": "Curry",
+      "Progressive-Index": 1
+    },
+    {
+      "Name": "Curry Tips ",
+      "Id": "0x39",
+      "Progressive-Group": "Curry",
+      "Progressive-Index": 2
+    },
+    {
+      "Name": "Curry Master ",
+      "Id": "0x3B",
+      "Progressive-Group": "Curry",
+      "Progressive-Index": 3
+    }
+  ],
+  "Lovers": [
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0x3D"
+    },
+    {
+      "Name": "Girl Talk",
+      "Id": "0x3E"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0x3F"
+    },
+    {
+      "Name": "Crocodile Tears",
+      "Id": "0x40"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x43"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x45"
+    },
+    {
+      "Name": "Sexy Technique♥",
+      "Id": "0x119"
+    }
+  ],
+  "Chariot": [
+    {
+      "Name": "Punk Talk",
+      "Id": "0x4B"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0x49"
+    },
+    {
+      "Name": "Stealth Dash",
+      "Id": "0x11B"
+    },
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0x4A"
+    },
+    {
+      "Name": "Insta-kill",
+      "Id": "0x50"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x4D"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x4F"
+    }
+  ],
+  "Justice": [],
+  "Hermit": [
+    {
+      "Name": "Moral Support",
+      "Id": "0x5B"
+    },
+    {
+      "Name": "Mementos Scan",
+      "Id": "0x5C"
+    },
+    {
+      "Name": "Position Hack",
+      "Id": "0x5E"
+    },
+    {
+      "Name": "Active Support",
+      "Id": "0x60"
+    },
+    {
+      "Name": "Treasure Reboot",
+      "Id": "0x61"
+    },
+    {
+      "Name": "Emergency Shift",
+      "Id": "0x63"
+    },
+    {
+      "Name": "Final Guard ",
+      "Id": "0x64"
+    }
+  ],
+  "Fortune": [
+    {
+      "Name": "Luck Reading",
+      "Id": "0x69"
+    },
+    {
+      "Name": "Money Reading",
+      "Id": "0x6A"
+    },
+    {
+      "Name": "Affinity Reading",
+      "Id": "0x6C"
+    },
+    {
+      "Name": "Special Fate Reading",
+      "Id": "0x6E"
+    },
+    {
+      "Name": "Celestial Reading",
+      "Id": "0x10F"
+    },
+    {
+      "Name": "True Affinity Reading",
+      "Id": "0x11D"
+    }
+  ],
+  "Strength": [
+    {
+      "Name": "Group Guillotine",
+      "Id": "0x71"
+    },
+    {
+      "Name": "Lockdown",
+      "Id": "0x6F"
+    },
+    {
+      "Name": "Special Treatment",
+      "Id": "0x110"
+    },
+    {
+      "Name": "Guillotine Booster",
+      "Id": "0x76"
+    },
+    {
+      "Name": "VIP Treatment",
+      "Id": "0x78"
+    }
+  ],
+  "Hanged Man": [
+    {
+      "Name": "Discount",
+      "Id": "0x7D"
+    },
+    {
+      "Name": "Starter Customization",
+      "Id": "0x114"
+    },
+    {
+      "Name": "Camo Customization",
+      "Id": "0x115"
+    },
+    {
+      "Name": "Expert Customization",
+      "Id": "0x116"
+    },
+    {
+      "Name": "On The House",
+      "Id": "0x117"
+    }
+  ],
+  "Death": [
+    {
+      "Name": "Rejuvenation",
+      "Id": "0x83",
+      "Progressive-Group": "Shop",
+      "Progressive-Index": 1
+    },
+    {
+      "Name": "Sterilization",
+      "Id": "0x85",
+      "Progressive-Group": "Shop",
+      "Progressive-Index": 2
+    },
+    {
+      "Name": "Immunization",
+      "Id": "0x89",
+      "Progressive-Group": "Shop",
+      "Progressive-Index": 3
+    },
+    {
+      "Name": "Discount",
+      "Id": "0x87"
+    },
+    {
+      "Name": "Resuscitation",
+      "Id": "0x8B",
+      "Progressive-Group": "Shop",
+      "Progressive-Index": 4
+    }
+  ],
+  "Temperance": [
+    {
+      "Name": "Slack Off",
+      "Id": "0x8D"
+    },
+    {
+      "Name": "Housekeeping",
+      "Id": "0x8F"
+    },
+    {
+      "Name": "Free Time",
+      "Id": "0x91"
+    },
+    {
+      "Name": "Super Housekeeping",
+      "Id": "0x93"
+    },
+    {
+      "Name": "Special Massage",
+      "Id": "0x96"
+    }
+  ],
+  "Devil": [
+    {
+      "Name": "Rumor-filled Scoop",
+      "Id": "0x118"
+    },
+    {
+      "Name": "Shocking Scoop",
+      "Id": "0x11A"
+    },
+    {
+      "Name": "Unbelievable Scoop",
+      "Id": "0x11C"
+    },
+    {
+      "Name": "Outrageous Scoop",
+      "Id": "0x11E"
+    },
+    {
+      "Name": "Legendary Scoop",
+      "Id": "0x121"
+    }
+  ],
+  "Tower": [
+    {
+      "Name": "Down Shot",
+      "Id": "0xA1"
+    },
+    {
+      "Name": "Bullet Hail",
+      "Id": "0xA2"
+    },
+    {
+      "Name": "Warning Shot",
+      "Id": "0xA3"
+    },
+    {
+      "Name": "Laced Bullets",
+      "Id": "0x111"
+    },
+    {
+      "Name": "Cheap Shot",
+      "Id": "0xA6"
+    },
+    {
+      "Name": "Electric Slug",
+      "Id": "0xA8"
+    },
+    {
+      "Name": "Oda Special",
+      "Id": "0xAA"
+    }
+  ],
+  "Star": [
+    {
+      "Name": "Koma Sabaki",
+      "Id": "0xAB"
+    },
+    {
+      "Name": "Uchikomi",
+      "Id": "0xAD"
+    },
+    {
+      "Name": "Kakoi Kuzushi",
+      "Id": "0xAF"
+    },
+    {
+      "Name": "Narikin",
+      "Id": "0xB1"
+    },
+    {
+      "Name": "Touryou",
+      "Id": "0xB3"
+    },
+    {
+      "Name": "Togo System",
+      "Id": "0xB4"
+    }
+  ],
+  "Moon": [
+    {
+      "Name": "Mishima's Support",
+      "Id": "0xBE"
+    },
+    {
+      "Name": "Mishima's Enthusiasm",
+      "Id": "0xB5"
+    },
+    {
+      "Name": "Mishima's Desperation",
+      "Id": "0x24"
+    },
+    {
+      "Name": "Phanboy",
+      "Id": "0xB7"
+    },
+    {
+      "Name": "Salvation Wish",
+      "Id": "0x28"
+    }
+  ],
+  "Sun": [
+    {
+      "Name": "Diplomacy",
+      "Id": "0xC0"
+    },
+    {
+      "Name": "Fundraising",
+      "Id": "0xC1"
+    },
+    {
+      "Name": "Manipulation",
+      "Id": "0xC3"
+    },
+    {
+      "Name": "Mind Control",
+      "Id": "0xC6"
+    },
+    {
+      "Name": "Charismatic Speech",
+      "Id": "0xC8"
+    }
+  ],
+  "Faith": [
+    {
+      "Name": "Tumbling",
+      "Id": "0xFA"
+    },
+    {
+      "Name": "Chaînés Hook",
+      "Id": "0xFE"
+    },
+    {
+      "Name": "Follow Up",
+      "Id": "0xFC"
+    },
+    {
+      "Name": "Fitness Talk",
+      "Id": "0xFD"
+    },
+    {
+      "Name": "Harisen Recovery",
+      "Id": "0xFF"
+    },
+    {
+      "Name": "Endure",
+      "Id": "0x101"
+    },
+    {
+      "Name": "Protect",
+      "Id": "0x102"
+    }
+  ],
+  "Councillor": [
+    {
+      "Name": "Detox X",
+      "Id": "0x105"
+    },
+    {
+      "Name": "Detox DX",
+      "Id": "0x106"
+    },
+    {
+      "Name": "Mindfulness",
+      "Id": "0x107"
+    },
+    {
+      "Name": "Wakefulness",
+      "Id": "0x108"
+    },
+    {
+      "Name": "Flow",
+      "Id": "0x10A"
+    },
+    {
+      "Name": "Flow Boost",
+      "Id": "0x10B"
+    }
+  ]
+}
